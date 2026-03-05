@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Трекер Привычек Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 25px;">
+
+        <!-- Flash-сообщения (над карточкой, на фоне) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast show {% if category == 'error' %}error{% endif %}" style="position: relative; width: 100%; max-width: 420px; text-align: center; margin: 0 auto;">
+                        <i class="fas {% if category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Карточка регистрации -->
+        <div class="dashboard-card login-card" style="max-width: 420px; width: 100%; padding: 40px; z-index: 10;">
+            
+            <!-- Логотип / заголовок -->
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-size: 2.2rem; margin: 0;">
+                    <i class="fas fa-chart-line" style="color: #667eea;"></i> Трекер Привычек Pro
+                </h1>
+                <p class="subtitle" style="margin-top: 8px;">Создание аккаунта</p>
+            </div>
+
+            <!-- Форма регистрации -->
+            <form method="POST">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Имя пользователя</label>
+                    <input type="text" id="username" name="username" placeholder="Придумайте имя пользователя" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" name="email" placeholder="Ваш email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Пароль</label>
+                    <input type="password" id="password" name="password" placeholder="Придумайте надёжный пароль" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password"><i class="fas fa-lock"></i> Подтвердите пароль</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required>
+                </div>
+
+                <div class="form-actions" style="margin-top: 30px;">
+                    <button type="submit" class="action-btn primary" style="width: 100%;">
+                        <i class="fas fa-user-plus"></i> Зарегистрироваться
+                    </button>
+                </div>
+            </form>
+
+            <!-- Ссылка на вход -->
+            <p style="text-align: center; margin-top: 25px; color: #666;">
+                Уже есть аккаунт? 
+                <a href="{{ url_for('login') }}" style="color: #667eea; font-weight: 500;">
+                    Войти
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

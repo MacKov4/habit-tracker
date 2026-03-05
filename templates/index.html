@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекер Привычек Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-content">
+                <span style="color: rgb(0, 0, 0); font-weight: 500; font-size: 1.1rem; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px;">
+                    Привет, {{ current_user.username | default('Гость') }}!
+                    
+                </span>
+                <h1><i class="fas fa-chart-line"></i> Трекер Привычек Pro</h1>
+                <p class="subtitle">Формируй полезные привычки, следи за прогрессом</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <i class="fas fa-fire"></i>
+                    <div>
+                        <span class="stat-number" id="totalStreak">0</span>
+                        <span class="stat-label">Дней подряд</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <div>
+                        <span class="stat-number" id="completedToday">0</span>
+                        <span class="stat-label">Выполнено сегодня</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Навигация -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">
+                <i class="fas fa-tachometer-alt"></i> Дашборд
+            </button>
+            <button class="nav-tab" data-tab="habits">
+                <i class="fas fa-list-check"></i> Мои привычки
+            </button>
+            <button class="nav-tab" data-tab="analytics">
+                <i class="fas fa-chart-bar"></i> Аналитика
+            </button>
+            <button class="nav-tab" data-tab="calendar">
+                <i class="fas fa-calendar"></i> Календарь
+            </button>
+        </nav>
+
+        <!-- Вкладка Дашборд -->
+        <div class="tab-content active" id="dashboard">
+            <div class="dashboard-grid">
+                <div class="dashboard-card progress-overview">
+                    <h3><i class="fas fa-chart-pie"></i> Прогресс сегодня</h3>
+                    <div class="progress-circle">
+                        <canvas id="todayProgressChart"></canvas>
+                        <div class="progress-text">
+                            <span class="progress-percentage" id="todayPercentage">0%</span>
+                            <span class="progress-label">Выполнено</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card quick-actions">
+                    <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
+                    <button class="action-btn primary" id="addHabitBtn">
+                        <i class="fas fa-plus"></i> Добавить привычку
+                    </button>
+                    <button class="action-btn secondary" id="markAllBtn">
+                        <i class="fas fa-check-double"></i> Отметить всё выполненным
+                    </button>
+                    <button class="action-btn tertiary" id="exportBtn">
+                        <i class="fas fa-download"></i> Экспорт данных
+                    </button>
+                    <button class="action-btn quaternary" id="importBtn">
+                        <i class="fas fa-upload"></i> Импорт данных
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+
+                <div class="dashboard-card recent-activity">
+                    <h3><i class="fas fa-history"></i> Недавняя активность</h3>
+                    <div class="activity-list" id="activityList">
+                        <!-- Элементы будут добавлены JS -->
+                    </div>
+                </div>
+
+                <div class="dashboard-card weekly-overview">
+                    <h3><i class="fas fa-calendar-week"></i> Эта неделя</h3>
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Быстрый просмотр привычек на сегодня -->
+            <div class="today-habits">
+                <h3><i class="fas fa-sun"></i> Привычки на сегодня</h3>
+                <div class="habits-grid" id="todayHabitsGrid">
+                    <!-- Привычки будут добавлены JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка Мои привычки -->
+        <div class="tab-content" id="habits">
+            <div class="habits-header">
+                <h2><i class="fas fa-list-check"></i> Управление привычками</h2>
+                <button class="btn-primary" id="addNewHabitBtn">
+                    <i class="fas fa-plus"></i> Добавить новую привычку
+                </button>
+            </div>
+
+            <div class="habits-list" id="habitsList">
+                {% if habits and habits|length > 0 %}
+                    {% for habit in habits %}
+                    <div class="habit-item habit-{{ habit.category or 'other' }}" data-habit-id="{{ habit.id }}">
+                            <div class="habit-info">
+                                <h4>{{ habit.name }}</h4>
+                                {% if habit.description %}
+                                    <p class="habit-desc">{{ habit.description }}</p>
+                                {% endif %}
+                                <div class="habit-meta">
+                                    <span><i class="fas fa-tag"></i> {{ habit.category | capitalize or 'Другое' }}</span>
+                                    <span><i class="fas fa-calendar"></i> {{ habit.frequency | capitalize or '—' }}</span>
+                                    {% if habit.target %}
+                                        <span><i class="fas fa-bullseye"></i> Цель: {{ habit.target }} {{ habit.unit or '' }}</span>
+                                    {% endif %}
+                                    <span><i class="fas fa-clock"></i> Создана: {{ habit.created_at.strftime('%d.%m.%Y') }}</span>
+                                </div>
+                            </div>
+                            <div class="habit-actions" data-habit-id="{{ habit.id }}">
+                                <button class="btn-small btn-edit" data-habit-id="{{ habit.id }}">
+                                    <i class="fas fa-edit"></i> Изменить
+                                </button>
+                                <button class="btn-small btn-delete" data-habit-id="${habit.id}">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-plus-circle" style="font-size: 3rem; color: #667eea;"></i>
+                        <h3>Нет привычек</h3>
+                        <p>Добавьте свою первую привычку и начните отслеживать прогресс!</p>
+                        <button class="btn-primary" onclick="habitTracker.openHabitModal()">
+                            <i class="fas fa-plus"></i> Добавить привычку
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Вкладка Аналитика -->
+        <div class="tab-content" id="analytics">
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-bar"></i> Прогресс за месяц</h3>
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-pie"></i> Распределение по категориям</h3>
+                    <canvas id="habitDistributionChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <h3><i class="fas fa-fire"></i> Анализ стрика</h3>
+                    <canvas id="streakChart"></canvas>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <span class="stat-value" id="longestStreak">0</span>
+                            <span class="stat-title">Самый длинный стрик</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-percentage"></i>
+                        <div>
+                            <span class="stat-value" id="overallCompletion">0%</span>
+                            <span class="stat-title">Общий процент выполнения</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <div>
+                            <span class="stat-value" id="totalDays">0</span>
+                            <span class="stat-title">Дней отслеживания</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка Календарь -->
+        <div class="tab-content" id="calendar">
+            <div class="calendar-header">
+                <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                <h2 id="currentMonth">Декабрь 2025</h2>
+                <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Календарь заполняется JS -->
+            </div>
+        </div>
+    </div>
+    <!-- Модальное окно для добавления/редактирования привычки -->
+    <div class="modal" id="habitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Добавить новую привычку</h2>
+                <button class="close-btn" id="closeModal">×</button>
+            </div>
+    
+            <form id="habitForm">
+                <!-- Скрытое поле для ID при редактировании -->
+                <input type="hidden" id="editHabitId" name="editHabitId">
+    
+                <div class="form-group">
+                    <label for="habitName">Название привычки *</label>
+                    <input type="text" id="habitName" name="habitName" required placeholder="Например: Выпивать 8 стаканов воды">
+                </div>
+    
+                <div class="form-group">
+                    <label for="habitDescription">Описание</label>
+                    <textarea id="habitDescription" name="habitDescription" placeholder="Необязательное описание..."></textarea>
+                </div>
+    
+                <div class="form-group">
+                    <label for="habitCategory">Категория</label>
+                    <select id="habitCategory" name="habitCategory">
+                        <option value="health">🏃 Здоровье и спорт</option>
+                        <option value="productivity">📈 Продуктивность</option>
+                        <option value="learning">📚 Обучение</option>
+                        <option value="mindfulness">🧘 Осознанность</option>
+                        <option value="social">👥 Социальная жизнь</option>
+                        <option value="creativity">🎨 Творчество</option>
+                        <option value="other">📝 Другое</option>
+                    </select>
+                </div>
+    
+                <div class="form-group">
+                    <label for="habitFrequency">Частота</label>
+                    <select id="habitFrequency" name="habitFrequency">
+                        <option value="daily">Ежедневно</option>
+                        <option value="weekly">Еженедельно</option>
+                        <option value="custom">Выбранные дни</option>
+                    </select>
+                </div>
+    
+                <div class="form-group" id="customDaysGroup" style="display: none;">
+                    <label>Выберите дни</label>
+                    <div class="days-selector">
+                        <label><input type="checkbox" name="customDays" value="0"> Вс</label>
+                        <label><input type="checkbox" name="customDays" value="1"> Пн</label>
+                        <label><input type="checkbox" name="customDays" value="2"> Вт</label>
+                        <label><input type="checkbox" name="customDays" value="3"> Ср</label>
+                        <label><input type="checkbox" name="customDays" value="4"> Чт</label>
+                        <label><input type="checkbox" name="customDays" value="5"> Пт</label>
+                        <label><input type="checkbox" name="customDays" value="6"> Сб</label>
+                    </div>
+                </div>
+    
+                <div class="form-group">
+                    <label for="habitTarget">Цель (необязательно)</label>
+                    <input type="number" id="habitTarget" name="habitTarget" min="1" placeholder="Например: 8 для 8 стаканов">
+                </div>
+    
+                <div class="form-group">
+                    <label for="habitUnit">Единица измерения (необязательно)</label>
+                    <input type="text" id="habitUnit" name="habitUnit" placeholder="Например: стаканов, страниц, минут">
+                </div>
+    
+                <!-- Кнопки -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Отмена</button>
+                    <button type="submit" class="btn-primary" id="saveHabitBtn">Сохранить привычку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Уведомление (тост) -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Успешно!</span>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
