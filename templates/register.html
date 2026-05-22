@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация | Трекер Привычек Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#764ba2">
+    <title>Регистрация | Трекер Привычек </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
 
-    <div class="container" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 25px;">
+    <div class="container"
+        style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 25px;">
 
         <!-- Flash-сообщения (над карточкой, на фоне) -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="toast show {% if category == 'error' %}error{% endif %}" style="position: relative; width: 100%; max-width: 420px; text-align: center; margin: 0 auto;">
-                        <i class="fas {% if category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
-                        <span>{{ message }}</span>
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="toast show {% if category == 'error' %}error{% endif %}"
+            style="position: relative; width: 100%; max-width: 420px; text-align: center; margin: 0 auto;">
+            <i class="fas {% if category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
 
         <!-- Карточка регистрации -->
-        <div class="dashboard-card login-card" style="max-width: 420px; width: 100%; padding: 40px; z-index: 10;">
-            
+        <div class="dashboard-card login-card animate-up"
+            style="max-width: 420px; width: 100%; padding: 40px; z-index: 10;">
+
             <!-- Логотип / заголовок -->
             <div style="text-align: center; margin-bottom: 30px;">
                 <h1 style="font-size: 2.2rem; margin: 0;">
-                    <i class="fas fa-chart-line" style="color: #667eea;"></i> Трекер Привычек Pro
+                    <i class="fas fa-chart-line" style="color: #667eea;"></i> Трекер Привычек
                 </h1>
                 <p class="subtitle" style="margin-top: 8px;">Создание аккаунта</p>
             </div>
@@ -39,34 +50,56 @@
             <form method="POST">
                 <div class="form-group">
                     <label for="username"><i class="fas fa-user"></i> Имя пользователя</label>
-                    <input type="text" id="username" name="username" placeholder="Придумайте имя пользователя" required autofocus>
+                    <input type="text" id="username" name="username" placeholder="Ваше имя" required autofocus>
                 </div>
 
                 <div class="form-group">
                     <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <div id="email-error"
+                        style="color: #ff6b6b; font-size: 0.85rem; margin-bottom: 5px; display: none;">Этот email уже
+                        занят</div>
                     <input type="email" id="email" name="email" placeholder="Ваш email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password"><i class="fas fa-lock"></i> Пароль</label>
-                    <input type="password" id="password" name="password" placeholder="Придумайте надёжный пароль" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Надёжный пароль" required>
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="confirm_password"><i class="fas fa-lock"></i> Подтвердите пароль</label>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirm_password" name="confirm_password"
+                            placeholder="Повторите пароль" required>
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm_password')"></i>
+                    </div>
                 </div>
 
                 <div class="form-actions" style="margin-top: 30px;">
-                    <button type="submit" class="action-btn primary" style="width: 100%;">
+                    <button type="submit" id="submit-btn" class="action-btn primary" style="width: 100%;">
                         <i class="fas fa-user-plus"></i> Зарегистрироваться
                     </button>
+                </div>
+
+                <div style="margin: 20px 0; text-align: center; position: relative;">
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 0;">
+                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; color: #999; font-size: 0.85rem;">или</span>
+                </div>
+
+                <div class="form-actions" style="margin-top: 0;">
+                    <a href="{{ url_for('google_login') }}" class="action-btn" style="width: 100%; background: white; color: #444; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <i class="fab fa-google" style="color: #DB4437; font-size: 18px;"></i>
+                        Войти через Google
+                    </a>
                 </div>
             </form>
 
             <!-- Ссылка на вход -->
             <p style="text-align: center; margin-top: 25px; color: #666;">
-                Уже есть аккаунт? 
+                Уже есть аккаунт?
                 <a href="{{ url_for('login') }}" style="color: #667eea; font-weight: 500;">
                     Войти
                 </a>
@@ -75,6 +108,59 @@
 
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        const submitBtn = document.getElementById('submit-btn');
+        let timeout = null;
+
+        emailInput.addEventListener('input', () => {
+            clearTimeout(timeout);
+            const email = emailInput.value;
+
+            if (!email || !email.includes('@')) {
+                emailError.style.display = 'none';
+                return;
+            }
+
+            timeout = setTimeout(async () => {
+                try {
+                    const response = await fetch('/api/check_email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+                    const data = await response.json();
+
+                    if (!data.available) {
+                        emailError.style.display = 'block';
+                        emailInput.style.borderColor = '#ff6b6b';
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = '0.7';
+                    } else {
+                        emailError.style.display = 'none';
+                        emailInput.style.borderColor = '';
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = '1';
+                    }
+                } catch (error) {
+                    console.error('Check email error:', error);
+                }
+            }, 500);
+        });
+    </script>
 </body>
+
 </html>

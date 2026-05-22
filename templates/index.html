@@ -1,48 +1,39 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Трекер Привычек Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#764ba2">
+    <title>Трекер Привычек</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
+
 <body>
     <div class="container">
         <!-- Шапка -->
         <header class="header">
-            <div class="header-content">
-                <span style="color: rgb(0, 0, 0); font-weight: 500; font-size: 1.1rem; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px;">
-                    Привет, {{ current_user.username | default('Гость') }}!
-                    
-                </span>
-                <h1><i class="fas fa-chart-line"></i> Трекер Привычек Pro</h1>
-                <p class="subtitle">Формируй полезные привычки, следи за прогрессом</p>
-            </div>
-            <div class="header-stats">
-                <div class="stat-card">
-                    <i class="fas fa-fire"></i>
-                    <div>
-                        <span class="stat-number" id="totalStreak">0</span>
-                        <span class="stat-label">Дней подряд</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-trophy"></i>
-                    <div>
-                        <span class="stat-number" id="completedToday">0</span>
-                        <span class="stat-label">Выполнено сегодня</span>
-                    </div>
-                </div>
+            <div class="header-content" style="text-align: center;">
+                <h1><i class="fas fa-chart-line"></i> Трекер Привычек </h1>
+                <p class="subtitle">Формируй полезные привычки и следи за прогрессом</p>
             </div>
         </header>
 
         <!-- Навигация -->
         <nav class="nav-tabs">
             <button class="nav-tab active" data-tab="dashboard">
-                <i class="fas fa-tachometer-alt"></i> Дашборд
+                <i class="fas fa-tachometer-alt"></i> Главная страница
             </button>
             <button class="nav-tab" data-tab="habits">
                 <i class="fas fa-list-check"></i> Мои привычки
@@ -53,11 +44,20 @@
             <button class="nav-tab" data-tab="calendar">
                 <i class="fas fa-calendar"></i> Календарь
             </button>
+            <button class="nav-tab" data-tab="profile">
+                <i class="fas fa-cog"></i> Настройки
+            </button>
+
+            <!-- Кнопка "Выход" как обычная вкладка -->
+            <button class="nav-tab nav-logout" onclick="logoutUser()">
+                <i class="fas fa-sign-out-alt"></i> Выход
+            </button>
         </nav>
 
         <!-- Вкладка Дашборд -->
         <div class="tab-content active" id="dashboard">
             <div class="dashboard-grid">
+
                 <div class="dashboard-card progress-overview">
                     <h3><i class="fas fa-chart-pie"></i> Прогресс сегодня</h3>
                     <div class="progress-circle">
@@ -69,22 +69,7 @@
                     </div>
                 </div>
 
-                <div class="dashboard-card quick-actions">
-                    <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
-                    <button class="action-btn primary" id="addHabitBtn">
-                        <i class="fas fa-plus"></i> Добавить привычку
-                    </button>
-                    <button class="action-btn secondary" id="markAllBtn">
-                        <i class="fas fa-check-double"></i> Отметить всё выполненным
-                    </button>
-                    <button class="action-btn tertiary" id="exportBtn">
-                        <i class="fas fa-download"></i> Экспорт данных
-                    </button>
-                    <button class="action-btn quaternary" id="importBtn">
-                        <i class="fas fa-upload"></i> Импорт данных
-                    </button>
-                    <input type="file" id="importFile" accept=".json" style="display: none;">
-                </div>
+
 
                 <div class="dashboard-card recent-activity">
                     <h3><i class="fas fa-history"></i> Недавняя активность</h3>
@@ -94,14 +79,32 @@
                 </div>
 
                 <div class="dashboard-card weekly-overview">
-                    <h3><i class="fas fa-calendar-week"></i> Эта неделя</h3>
-                    <canvas id="weeklyChart"></canvas>
+                    <h3><i class="fas fa-calendar-week"></i> Текущая неделя</h3>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
                 </div>
             </div>
 
             <!-- Быстрый просмотр привычек на сегодня -->
             <div class="today-habits">
-                <h3><i class="fas fa-sun"></i> Привычки на сегодня</h3>
+                <div class="section-header-flex">
+                    <h3><i class="fas fa-sun"></i> Привычки на сегодня</h3>
+                    <div class="habit-filters-dropdown">
+                        <select id="habitFilterSelect">
+                            <!-- Опции будут добавлены JS -->
+                        </select>
+                        <button id="deleteListBtn" class="btn-small"
+                            style="display: none; background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; padding: 6px 10px; border-radius: 8px; cursor: pointer;"
+                            title="Удалить список">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-small btn-secondary" onclick="habitTracker.openCustomListModal()"
+                            style="padding: 8px 12px; border-radius: 8px; font-size: 0.9rem;">
+                            <i class="fas fa-plus"></i> Список
+                        </button>
+                    </div>
+                </div>
                 <div class="habits-grid" id="todayHabitsGrid">
                     <!-- Привычки будут добавлены JS -->
                 </div>
@@ -119,81 +122,140 @@
 
             <div class="habits-list" id="habitsList">
                 {% if habits and habits|length > 0 %}
-                    {% for habit in habits %}
-                    <div class="habit-item habit-{{ habit.category or 'other' }}" data-habit-id="{{ habit.id }}">
-                            <div class="habit-info">
-                                <h4>{{ habit.name }}</h4>
-                                {% if habit.description %}
-                                    <p class="habit-desc">{{ habit.description }}</p>
-                                {% endif %}
-                                <div class="habit-meta">
-                                    <span><i class="fas fa-tag"></i> {{ habit.category | capitalize or 'Другое' }}</span>
-                                    <span><i class="fas fa-calendar"></i> {{ habit.frequency | capitalize or '—' }}</span>
-                                    {% if habit.target %}
-                                        <span><i class="fas fa-bullseye"></i> Цель: {{ habit.target }} {{ habit.unit or '' }}</span>
-                                    {% endif %}
-                                    <span><i class="fas fa-clock"></i> Создана: {{ habit.created_at.strftime('%d.%m.%Y') }}</span>
-                                </div>
-                            </div>
-                            <div class="habit-actions" data-habit-id="{{ habit.id }}">
-                                <button class="btn-small btn-edit" data-habit-id="{{ habit.id }}">
-                                    <i class="fas fa-edit"></i> Изменить
-                                </button>
-                                <button class="btn-small btn-delete" data-habit-id="${habit.id}">
-                                    <i class="fas fa-trash"></i> Удалить
-                                </button>
-                            </div>
+                {% for habit in habits %}
+                <div class="habit-item habit-{{ habit.category or 'other' }}" data-habit-id="{{ habit.id }}">
+                    <div class="habit-info">
+                        <h4>{{ habit.name }}</h4>
+                        {% if habit.description %}
+                        <p class="habit-desc">{{ habit.description }}</p>
+                        {% endif %}
+                        <div class="habit-meta">
+                            <span class="category-label" style="--cat-color: {{ habit.display_color }};">
+                                <span class="category-icon">{{ habit.display_icon }}</span>
+                                {{ habit.display_category }}
+                            </span>
+
+                            <span><i class="fas fa-calendar"></i> {{ habit.display_frequency }}</span>
+
+                            {% if habit.target %}
+                            <span><i class="fas fa-bullseye"></i> Цель: {{ habit.target }} {{ habit.unit or '' }}</span>
+                            {% endif %}
+
+                            <span><i class="fas fa-clock"></i> Создана: {{ habit.created_at.strftime('%d.%m.%Y')
+                                }}</span>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-plus-circle" style="font-size: 3rem; color: #667eea;"></i>
-                        <h3>Нет привычек</h3>
-                        <p>Добавьте свою первую привычку и начните отслеживать прогресс!</p>
-                        <button class="btn-primary" onclick="habitTracker.openHabitModal()">
-                            <i class="fas fa-plus"></i> Добавить привычку
+                    </div>
+                    <div class="habit-actions" data-habit-id="{{ habit.id }}">
+                        <button class="btn-small btn-edit" data-habit-id="{{ habit.id }}">
+                            <i class="fas fa-edit"></i> Изменить
+                        </button>
+                        <button class="btn-small btn-delete" data-habit-id="{{ habit.id }}">
+                            <i class="fas fa-trash"></i> Удалить
                         </button>
                     </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-plus-circle" style="font-size: 3rem; color: #318dc2;"></i>
+                    <h3>Нет привычек</h3>
+                    <p>Добавьте свою первую привычку и начните отслеживать прогресс!</p>
+
+                </div>
                 {% endif %}
             </div>
         </div>
 
         <!-- Вкладка Аналитика -->
         <div class="tab-content" id="analytics">
-            <div class="analytics-grid">
-                <div class="chart-card">
-                    <h3><i class="fas fa-chart-bar"></i> Прогресс за месяц</h3>
-                    <canvas id="monthlyChart"></canvas>
-                </div>
-                
-                <div class="chart-card">
-                    <h3><i class="fas fa-chart-pie"></i> Распределение по категориям</h3>
-                    <canvas id="habitDistributionChart"></canvas>
+            <div class="analytics-container">
+
+                <div class="analytics-grid">
+                    <div class="chart-card glass-card" id="monthlyChartCard">
+                        <div class="chart-header">
+                            <i class="fas fa-chart-bar"></i>
+                            <h3>Прогресс за месяц</h3>
+                        </div>
+                        <!-- Desktop: обычный Chart.js canvas -->
+                        <div class="chart-body desktop-chart-body">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                        <!-- Mobile: кастомный scrollable canvas -->
+                        <div class="mobile-scroll-chart" id="monthlyScrollChart" style="display:none;">
+                            <div class="mobile-chart-inner" id="monthlyScrollInner">
+                                <canvas id="monthlyMobileCanvas"></canvas>
+                            </div>
+                            <div class="mobile-chart-tooltip" id="monthlyTooltip"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card glass-card">
+                        <div class="chart-header">
+                            <i class="fas fa-chart-pie"></i>
+                            <h3>Распределение по категориям</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="habitDistributionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card glass-card" id="skipChartCard">
+                        <div class="chart-header">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3>Пропуски за месяц</h3>
+                        </div>
+                        <!-- Desktop: обычный Chart.js canvas -->
+                        <div class="chart-body desktop-chart-body">
+                            <canvas id="monthlySkipChart"></canvas>
+                        </div>
+                        <!-- Mobile: кастомный scrollable canvas -->
+                        <div class="mobile-scroll-chart" id="skipScrollChart" style="display:none;">
+                            <div class="mobile-chart-inner" id="skipScrollInner">
+                                <canvas id="skipMobileCanvas"></canvas>
+                            </div>
+                            <div class="mobile-chart-tooltip" id="skipTooltip"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="chart-card">
-                    <h3><i class="fas fa-fire"></i> Анализ стрика</h3>
-                    <canvas id="streakChart"></canvas>
+                <!-- Умные инсайты -->
+                <div class="insights-section" style="margin-top: 20px; margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 15px; font-size: 1.2rem; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-lightbulb" style="color: #feca57;"></i> Умные инсайты
+                    </h3>
+                    <div id="insightsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                        <div style="padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px dashed var(--border-color); text-align: center; color: var(--text-muted);">
+                            <i class="fas fa-spinner fa-spin"></i> Анализируем ваши данные...
+                        </div>
+                    </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <i class="fas fa-trophy"></i>
-                        <div>
+                <div class="stats-row">
+                    <div class="stat-card-new">
+                        <div class="stat-icon-circle blue">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
                             <span class="stat-value" id="longestStreak">0</span>
                             <span class="stat-title">Самый длинный стрик</span>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <i class="fas fa-percentage"></i>
-                        <div>
+
+                    <div class="stat-card-new">
+                        <div class="stat-icon-circle purple">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-info">
                             <span class="stat-value" id="overallCompletion">0%</span>
                             <span class="stat-title">Общий процент выполнения</span>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <i class="fas fa-calendar-check"></i>
-                        <div>
+
+                    <div class="stat-card-new">
+                        <div class="stat-icon-circle green">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
                             <span class="stat-value" id="totalDays">0</span>
                             <span class="stat-title">Дней отслеживания</span>
                         </div>
@@ -213,80 +275,364 @@
                 <!-- Календарь заполняется JS -->
             </div>
         </div>
+
+        <!-- Вкладка Профиль и Настройки (Объединенная структура в стиле TickTick) -->
+        <div class="tab-content" id="profile">
+            <div class="settings-layout">
+                <!-- Левое меню настроек -->
+                <div class="settings-sidebar">
+                    <div class="sidebar-group">
+                        <button class="sidebar-item active" data-settings-tab="account">
+                            <i class="fas fa-user-circle"></i> Аккаунт
+                        </button>
+                        <button class="sidebar-item" data-settings-tab="appearance">
+                            <i class="fas fa-paint-brush"></i> Внешний вид
+                        </button>
+                        <button class="sidebar-item" data-settings-tab="notifications">
+                            <i class="fas fa-bell"></i> Уведомления
+                        </button>
+                    </div>
+                    <div class="sidebar-group">
+                        <button class="sidebar-item" data-settings-tab="data">
+                            <i class="fas fa-database"></i> Данные
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Контентная область -->
+                <div class="settings-main">
+                    <!-- Секция Аккаунт (Профиль) -->
+                    <div class="settings-pane active" id="pane-account">
+                        <div class="profile-header-tick">
+                            <div class="profile-avatar-large">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h2 id="profileUsernameTick">{{ current_user.display_username }}</h2>
+                        </div>
+                        <div class="settings-block">
+                            <div class="settings-row">
+                                <div class="row-label">Электронная почта</div>
+                                <div class="row-value"
+                                    style="color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+                                    {{ current_user.display_email }}
+                                </div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="row-label">Пароль</div>
+                                <div class="row-action" onclick="habitTracker.openChangePasswordModal()">Изменить</div>
+                            </div>
+                        </div>
+
+
+                        <div class="settings-block">
+                            <div class="settings-row row-danger" id="clearDataBtnTick">
+                                <div class="row-label">Управление данными</div>
+                                <div class="row-action action-danger">Очистить все записи</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Секция Внешний вид -->
+                    <div class="settings-pane" id="pane-appearance" data-current-theme="{{ current_user.theme_color }}">
+                        <h3>Внешний вид</h3>
+                        <div class="settings-block">
+                            <div class="settings-row">
+                                <div class="row-info">
+                                    <div class="setting-title">Цветовой акцент</div>
+                                    <div class="setting-desc">Основной цвет кнопок и элементов</div>
+                                </div>
+                                <div class="color-presets">
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#667eea' }}"
+                                        style="background: linear-gradient(135deg, #667eea, #764ba2);"
+                                        onclick="habitTracker.setAccentColor('#667eea')" title="Небо"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#4ecdc4' }}"
+                                        style="background: linear-gradient(135deg, #4ecdc4, #55efc4);"
+                                        onclick="habitTracker.setAccentColor('#4ecdc4')" title="Бирюза"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#45b7d1' }}"
+                                        style="background: linear-gradient(135deg, #45b7d1, #0984e3);"
+                                        onclick="habitTracker.setAccentColor('#45b7d1')" title="Теал"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#96ceb4' }}"
+                                        style="background: linear-gradient(135deg, #96ceb4, #00b894);"
+                                        onclick="habitTracker.setAccentColor('#96ceb4')" title="Зеленый"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#feca57' }}"
+                                        style="background: linear-gradient(135deg, #feca57, #ff9f43);"
+                                        onclick="habitTracker.setAccentColor('#feca57')" title="Абрикос"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#ff9ff3' }}"
+                                        style="background: linear-gradient(135deg, #ff9ff3, #fd79a8);"
+                                        onclick="habitTracker.setAccentColor('#ff9ff3')" title="Персик"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#a29bfe' }}"
+                                        style="background: linear-gradient(135deg, #a29bfe, #6c5ce7);"
+                                        onclick="habitTracker.setAccentColor('#a29bfe')" title="Сирень"></div>
+                                    <div class="color-option {{ 'active' if current_user.theme_color == '#ff6b6b' }}"
+                                        style="background: linear-gradient(135deg, #ff6b6b, #ee5253);"
+                                        onclick="habitTracker.setAccentColor('#ff6b6b')" title="Ягода"></div>
+                                </div>
+                            </div>
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <span class="setting-title">Темная тема</span>
+                                    <span class="setting-desc">Использовать темные цвета интерфейса</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="darkModeToggleTick">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Секция Уведомления -->
+                    <div class="settings-pane" id="pane-notifications">
+                        <h3>Уведомления</h3>
+
+                        <div class="settings-block">
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <span class="setting-title">Ежедневные уведомления</span>
+                                    <span class="setting-desc">Трекер может напоминать о твоих сегодняшних задачах в
+                                        определенное время каждый день. Выберите время для ежедневных
+                                        напоминаний.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="dailyRemindersToggle" {{ 'checked' if
+                                        current_user.daily_reminders }}
+                                        onchange="habitTracker.updateNotificationSetting('daily_reminders', this.checked)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="settings-row">
+                                <div class="row-label">Время ежедневного напоминания</div>
+                                <div class="row-value">
+                                    <input type="time" id="reminderTimeInput" value="{{ current_user.reminder_time }}"
+                                        class="settings-time-input"
+                                        onchange="habitTracker.updateNotificationSetting('reminder_time', this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-block">
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <span class="setting-title">Интернет-напоминание</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="internetRemindersToggle" {{ 'checked' if
+                                        current_user.internet_reminders }}
+                                        onchange="habitTracker.updateNotificationSetting('internet_reminders', this.checked)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-block">
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <span class="setting-title">Уведомления по электронной почте</span>
+                                    <span class="setting-desc">При включении вы сможете получать уведомления о задачах
+                                        по электронной почте. Ежедневный лимит напоминаний составляет 50 раз.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="emailNotificationsToggle" {{ 'checked' if
+                                        current_user.email_notifications }}
+                                        onchange="habitTracker.updateNotificationSetting('email_notifications', this.checked)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="pane-data">
+                        <h3>Резервное копирование</h3>
+                        <div class="settings-block">
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <div class="setting-title">Экспорт</div>
+                                    <div class="setting-desc">Создать локальную резервную копию</div>
+                                </div>
+                                <div class="row-action" id="exportBtnTick" style="margin:0;">Скачать JSON</div>
+                            </div>
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <div class="setting-title">Импорт</div>
+                                    <div class="setting-desc">Загрузить ранее сохраненный бэкап</div>
+                                </div>
+                                <div class="row-action" id="importBtnTick" style="margin:0;">Выбрать файл</div>
+                                <input type="file" id="importFileTick" style="display: none;" accept=".json">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Убираем старую вкладку Настройки, так как объединили ее с Профилем в стиле TickTick -->
+        <div class="tab-content" id="settings" style="display: none;"></div>
+    </div>
+    <!-- Модальное окно подтверждения удаления -->
+    <div class="modal" id="deleteConfirmModal" style="z-index: 10010;">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <div class="modal-header">
+                <h2 style="color: #f44336;">
+                    <i class="fas fa-exclamation-triangle"></i> Удалить привычку?
+                </h2>
+                <button class="close-btn" id="closeDeleteModal">×</button>
+            </div>
+
+            <p style="margin: 25px 0 30px; font-size: 1.05rem; color: #444;">
+                Вы уверены, что хотите удалить эту привычку?<br>
+                <strong>Это действие нельзя отменить.</strong>
+            </p>
+
+            <div class="form-actions" style="justify-content: center; gap: 15px;">
+                <button type="button" class="btn-secondary" id="cancelDeleteBtn">Нет, отменить</button>
+                <button type="button" class="btn-primary" id="confirmDeleteBtn"
+                    style="background-color: #f44336; border-color: #f44336;">
+                    Да, удалить
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Модальное окно подтверждения выхода -->
+    <div class="modal" id="logoutConfirmModal" style="z-index: 10010;">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <div class="modal-header">
+                <h2 style="color: #f44336;">
+                    <i class="fas fa-sign-out-alt"></i> Выход из аккаунта
+                </h2>
+                <button class="close-btn" id="closeLogoutModal">×</button>
+            </div>
+
+            <div class="modal-body">
+                <p>Вы действительно хотите выйти из аккаунта?</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" id="cancelLogoutBtn">Отмена</button>
+                <button type="button" class="btn-danger" id="confirmLogoutBtn">
+                    Да, выйти
+                </button>
+            </div>
+        </div>
     </div>
     <!-- Модальное окно для добавления/редактирования привычки -->
     <div class="modal" id="habitModal">
-        <div class="modal-content">
+        <div class="modal-content smart-modal">
             <div class="modal-header">
                 <h2 id="modalTitle">Добавить новую привычку</h2>
                 <button class="close-btn" id="closeModal">×</button>
             </div>
-    
-            <form id="habitForm">
-                <!-- Скрытое поле для ID при редактировании -->
-                <input type="hidden" id="editHabitId" name="editHabitId">
-    
-                <div class="form-group">
-                    <label for="habitName">Название привычки *</label>
-                    <input type="text" id="habitName" name="habitName" required placeholder="Например: Выпивать 8 стаканов воды">
-                </div>
-    
-                <div class="form-group">
-                    <label for="habitDescription">Описание</label>
-                    <textarea id="habitDescription" name="habitDescription" placeholder="Необязательное описание..."></textarea>
-                </div>
-    
-                <div class="form-group">
-                    <label for="habitCategory">Категория</label>
-                    <select id="habitCategory" name="habitCategory">
-                        <option value="health">🏃 Здоровье и спорт</option>
-                        <option value="productivity">📈 Продуктивность</option>
-                        <option value="learning">📚 Обучение</option>
-                        <option value="mindfulness">🧘 Осознанность</option>
-                        <option value="social">👥 Социальная жизнь</option>
-                        <option value="creativity">🎨 Творчество</option>
-                        <option value="other">📝 Другое</option>
-                    </select>
-                </div>
-    
-                <div class="form-group">
-                    <label for="habitFrequency">Частота</label>
-                    <select id="habitFrequency" name="habitFrequency">
-                        <option value="daily">Ежедневно</option>
-                        <option value="weekly">Еженедельно</option>
-                        <option value="custom">Выбранные дни</option>
-                    </select>
-                </div>
-    
-                <div class="form-group" id="customDaysGroup" style="display: none;">
-                    <label>Выберите дни</label>
-                    <div class="days-selector">
-                        <label><input type="checkbox" name="customDays" value="0"> Вс</label>
-                        <label><input type="checkbox" name="customDays" value="1"> Пн</label>
-                        <label><input type="checkbox" name="customDays" value="2"> Вт</label>
-                        <label><input type="checkbox" name="customDays" value="3"> Ср</label>
-                        <label><input type="checkbox" name="customDays" value="4"> Чт</label>
-                        <label><input type="checkbox" name="customDays" value="5"> Пт</label>
-                        <label><input type="checkbox" name="customDays" value="6"> Сб</label>
+
+            <!-- Прокручиваемая область формы -->
+            <div class="modal-body">
+                <form id="habitForm">
+                    <input type="hidden" id="editHabitId" name="editHabitId">
+
+                    <!-- Категория -->
+                    <div class="form-group">
+                        <label for="habitCategory"><i class="fas fa-tag"></i> Категория</label>
+                        <select id="habitCategory" name="habitCategory" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="health">🏃 Здоровье</option>
+                            <option value="sport">💪 Спорт</option>
+                            <option value="learning">📚 Учёба и саморазвитие</option>
+                            <option value="productivity">💻 Продуктивность</option>
+                            <option value="mental">🧘 Ментальное здоровье</option>
+                            <option value="household">🧹 Быт и порядок</option>
+                            <option value="finance">💰 Финансы</option>
+                            <option value="social">🧑‍🤝‍🧑 Социальные связи</option>
+                            <option value="morning">🌅 Утренние привычки</option>
+                            <option value="evening">🌙 Вечерние привычки</option>
+                            <option value="other">📝 Своя категория</option>
+                        </select>
                     </div>
-                </div>
-    
-                <div class="form-group">
-                    <label for="habitTarget">Цель (необязательно)</label>
-                    <input type="number" id="habitTarget" name="habitTarget" min="1" placeholder="Например: 8 для 8 стаканов">
-                </div>
-    
-                <div class="form-group">
-                    <label for="habitUnit">Единица измерения (необязательно)</label>
-                    <input type="text" id="habitUnit" name="habitUnit" placeholder="Например: стаканов, страниц, минут">
-                </div>
-    
-                <!-- Кнопки -->
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" id="cancelBtn">Отмена</button>
-                    <button type="submit" class="btn-primary" id="saveHabitBtn">Сохранить привычку</button>
-                </div>
-            </form>
+
+                    <!-- Название категории (при "Своя категория") -->
+                    <div class="form-group" id="customCategoryGroup" style="display: none;">
+                        <label for="customCategoryName">Название категории</label>
+                        <input type="text" id="customCategoryName" name="customCategoryName"
+                            placeholder="Например: Мои финансы">
+                    </div>
+
+                    <!-- Привычка (готовые варианты) -->
+                    <div class="form-group" id="habitTypeGroup" style="display: none;">
+                        <label for="habitType" id="habitTypeLabel">Привычка</label>
+                        <select id="habitType" name="habitType"></select>
+                    </div>
+
+                    <!-- Название своей привычки -->
+                    <div class="form-group" id="customHabitGroup" style="display: none;">
+                        <label for="customHabitName"><i class="fas fa-edit"></i> Название своей привычки</label>
+                        <input type="text" id="customHabitName" name="customHabitName"
+                            placeholder="Введите название привычки">
+                    </div>
+
+                    <!-- Остальные поля -->
+                    <div class="form-group">
+                        <label for="habitDescription"><i class="fas fa-align-left"></i> Описание</label>
+                        <textarea id="habitDescription" name="habitDescription"
+                            placeholder="Необязательное описание..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="habitFrequency"><i class="fas fa-redo"></i> Частота</label>
+                        <select id="habitFrequency" name="habitFrequency">
+                            <option value="daily">Ежедневно</option>
+                            <option value="custom">Выбранные дни</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="customDaysGroup" style="display: none;">
+                        <label><i class="fas fa-calendar-day"></i> Выберите дни</label>
+                        <div class="days-selector custom-days-selector">
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="0">
+                                <span>Пн</span></label>
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="1">
+                                <span>Вт</span></label>
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="2">
+                                <span>Ср</span></label>
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="3">
+                                <span>Чт</span></label>
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="4">
+                                <span>Пт</span></label>
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="5">
+                                <span>Сб</span></label>
+                            <label class="day-chip"><input type="checkbox" name="customDays" value="6">
+                                <span>Вс</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="habitTarget"><i class="fas fa-bullseye"></i> Цель</label>
+                            <input type="number" id="habitTarget" name="habitTarget" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="habitUnitSelect"><i class="fas fa-ruler"></i> Единица</label>
+                            <select id="habitUnitSelect" name="habitUnitSelect">
+                                <option value="">Без единицы</option>
+                                <option value="раз">раз</option>
+                                <option value="мин">мин</option>
+                                <option value="час">час</option>
+                                <option value="км">км</option>
+                                <option value="шт">шт</option>
+                                <option value="стр">стр</option>
+                                <option value="мл">мл</option>
+                                <option value="other">📝 Свой вариант...</option>
+                            </select>
+                            <input type="text" id="habitUnit" name="habitUnit" placeholder="Напр: кг"
+                                style="display: none; margin-top: 8px;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Кнопки всегда внизу -->
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancelBtn">Отмена</button>
+                <button type="submit" form="habitForm" class="btn-primary" id="saveHabitBtn">Сохранить привычку</button>
+            </div>
         </div>
     </div>
 
@@ -297,6 +643,249 @@
             <span id="toastMessage">Успешно!</span>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <!-- ========================
+     КОНТЕКСТНОЕ МЕНЮ ПРИВЫЧКИ (три точки)
+     ======================== -->
+    <div id="habitMenu" class="habit-menu">
+        <div class="habit-menu__list">
+            <button class="habit-menu__item" data-action="skip">
+                <i class="fas fa-forward habit-menu__icon habit-menu__icon--orange"></i>
+                Отметить как пропущено
+            </button>
+            <div class="habit-menu__divider"></div>
+            <button class="habit-menu__item" data-action="add-note">
+                <i class="fas fa-pen habit-menu__icon habit-menu__icon--purple"></i>
+                Добавить заметку
+            </button>
+            <button class="habit-menu__item" data-action="view-notes">
+                <i class="fas fa-sticky-note habit-menu__icon habit-menu__icon--purple"></i>
+                Посмотреть заметки
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================
+     МОДАЛКА: ДОБАВИТЬ ЗАМЕТКУ
+     ======================== -->
+    <div class="modal" id="noteModal">
+        <div class="modal-content" style="max-width:440px;" id="noteModalContent">
+            <div class="modal-header">
+                <h3>Добавить заметку</h3>
+                <button class="close-btn"
+                    onclick="document.getElementById('noteModal').classList.remove('show')">×</button>
+            </div>
+            <div class="modal-body" style="padding:20px 28px 8px;">
+                <textarea id="noteText" class="note-textarea" placeholder="Введите заметку..."></textarea>
+
+                <div class="mood-selector-container">
+                    <p class="mood-title">Как ваше настроение? (необязательно)</p>
+                    <div class="mood-options">
+                        <button class="mood-btn" data-mood="excellent">
+                            <span class="mood-emoji">😍</span>
+                            <span class="mood-label">Отлично</span>
+                        </button>
+                        <button class="mood-btn" data-mood="good">
+                            <span class="mood-emoji">😊</span>
+                            <span class="mood-label">Хорошо</span>
+                        </button>
+                        <button class="mood-btn" data-mood="neutral">
+                            <span class="mood-emoji">😐</span>
+                            <span class="mood-label">Нормально</span>
+                        </button>
+                        <button class="mood-btn" data-mood="bad">
+                            <span class="mood-emoji">☹️</span>
+                            <span class="mood-label">Плохо</span>
+                        </button>
+                        <button class="mood-btn" data-mood="terrible">
+                            <span class="mood-emoji">😡</span>
+                            <span class="mood-label">Ужасно</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary"
+                    onclick="document.getElementById('noteModal').classList.remove('show')">Отмена</button>
+                <button class="btn-primary" onclick="habitTracker.saveNote()">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================
+     МОДАЛКА: ПРОСМОТР ЗАМЕТОК
+     ======================== -->
+    <div class="modal" id="viewNotesModal">
+        <div class="modal-content" style="max-width:480px;" id="viewNotesModalContent">
+            <div class="modal-header">
+                <h3>Заметки</h3>
+                <button class="close-btn"
+                    onclick="document.getElementById('viewNotesModal').classList.remove('show')">×</button>
+            </div>
+            <div class="modal-body" id="notesListContainer"
+                style="padding:16px 28px 24px;max-height:420px;overflow-y:auto;">
+                <!-- Заметки рендерятся JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления ЗАМЕТКИ (на переднем плане) -->
+    <div class="modal" id="deleteNoteConfirmModal" style="z-index: 10010;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header">
+                <h2 style="color: #f44336; font-size: 1.5rem;">
+                    <i class="fas fa-trash-alt"></i> Удалить заметку?
+                </h2>
+                <button class="close-btn"
+                    onclick="document.getElementById('deleteNoteConfirmModal').classList.remove('show')">×</button>
+            </div>
+
+            <p style="margin: 20px 0 25px; font-size: 1rem; color: #555;">
+                Вы уверены, что хотите безвозвратно удалить эту заметку?
+            </p>
+
+            <div class="form-actions" style="justify-content: center; gap: 12px; padding-bottom: 10px;">
+                <button type="button" class="btn-secondary"
+                    onclick="document.getElementById('deleteNoteConfirmModal').classList.remove('show')">Отмена</button>
+                <button type="button" class="btn-primary" id="confirmDeleteNoteBtn"
+                    style="background-color: #f44336; border-color: #f44336; min-width: 120px;">
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка создания своего списка -->
+    <div class="modal" id="customListModal">
+        <div class="modal-content smart-modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 id="listModalTitle">Создать свой список</h2>
+                <button class="close-btn" onclick="habitTracker.closeCustomListModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="listName"><i class="fas fa-edit"></i> Название списка</label>
+                    <input type="text" id="listName" placeholder="Например: Утренняя рутина">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <div id="listHabitsSelection" class="list-selection-grid">
+                        <!-- Список привычек для выбора будет здесь -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="habitTracker.closeCustomListModal()">Отмена</button>
+                <button class="btn-primary" onclick="habitTracker.saveCustomList()">Сохранить список</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения импорта -->
+    <div class="modal" id="importConfirmModal" style="z-index: 10010;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header">
+                <h2 style="color: #6366f1; font-size: 1.5rem;">
+                    <i class="fas fa-file-import"></i> Импорт данных
+                </h2>
+                <button class="close-btn"
+                    onclick="document.getElementById('importConfirmModal').classList.remove('show')">×</button>
+            </div>
+            <div class="modal-body" style="padding: 10px 30px 20px; font-size: 1rem; color: var(--text-main);">
+                <p>Внимание! Загрузка резервной копии <b>удалит все ваши текущие привычки и прогресс</b>.</p>
+                <p style="margin-top: 10px; font-weight: 600;">Вы уверены, что хотите продолжить?</p>
+            </div>
+            <div class="modal-footer" style="justify-content: center; border-top: none; padding-top: 0;">
+                <button class="btn-secondary"
+                    onclick="document.getElementById('importConfirmModal').classList.remove('show')">
+                    Отмена
+                </button>
+                <button class="btn-primary" id="confirmImportBtn" style="background: #ef4444;">
+                    Да, заменить данные
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка деталей дня из календаря -->
+    <div id="dayDetailsModal" class="modal">
+        <div class="smart-modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 id="dayDetailsTitle">Детали дня</h2>
+                <p id="dayDetailsSubtitle" style="color: #64748b; font-size: 0.9rem; margin-top: 4px;"></p>
+            </div>
+            <div class="modal-body" id="dayDetailsBody" style="padding-top: 20px;">
+                <!-- Список привычек будет здесь -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="habitTracker.closeDayDetailsModal()"
+                    style="width: 100%;">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        const LOGOUT_URL = "{{ url_for('logout') }}";
+    </script>
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" class="modal" style="z-index: 10010;">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
+            <div class="confirm-icon" style="font-size: 3rem; color: #ef4444; margin-bottom: 20px;">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h3 id="confirmTitle" style="margin-bottom: 10px; color: #1e293b;">Удалить?</h3>
+            <p id="confirmMessage" style="color: #64748b; margin-bottom: 25px; font-size: 0.95rem;">Это действие нельзя
+                будет отменить.</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="confirmCancelBtn" class="btn btn-secondary"
+                    style="flex: 1; padding: 12px; border-radius: 10px;">Отмена</button>
+                <button id="confirmActionBtn" class="btn btn-danger"
+                    style="flex: 1; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;">Удалить</button>
+            </div>
+        </div>
+    </div>
+    <!-- Модалка изменения пароля -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content" style="max-width: 400px; overflow: hidden; border-radius: 24px;">
+            <div class="modal-header">
+                <h2>Изменить пароль</h2>
+                <button class="close-btn" onclick="habitTracker.closeChangePasswordModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="oldPassword">Текущий пароль</label>
+                        <input type="password" id="oldPassword" name="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Новый пароль</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Подтвердите пароль</label>
+                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+                    <div id="passwordError" class="inline-error"
+                        style="color: #ef4444; font-size: 0.85rem; margin-top: 5px; margin-bottom: 5px; min-height: 18px; display: none; text-align: center; font-weight: 500;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="habitTracker.closeChangePasswordModal()">Отмена</button>
+                <button class="btn-primary" onclick="habitTracker.saveNewPassword()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+    <!-- Toast уведомления -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i id="toastIcon" class="fas fa-info-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
 </body>
+
 </html>

@@ -1,3 +1,23 @@
+:root {
+    --primary-color: #667eea;
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: rgba(255, 255, 255, 0.2);
+    --glass-blur: blur(10px);
+}
+
+.dark-mode {
+    --primary-color: #818cf8;
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --card-bg: rgba(30, 41, 59, 0.85);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.05);
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -7,10 +27,11 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg-gradient);
     min-height: 100vh;
-    color: #333;
+    color: var(--text-main);
     line-height: 1.6;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -21,8 +42,8 @@ body {
 
 /* Header Styles */
 .header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
     border-radius: 20px;
     padding: 30px;
     margin-bottom: 30px;
@@ -33,10 +54,15 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.header-content {
+    width: 100%;
+    text-align: center;
+}
+
 .header-content h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 5px;
@@ -44,7 +70,7 @@ body {
 
 .header-content h1 i {
     margin-right: 15px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -61,7 +87,7 @@ body {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: var(--primary-gradient);
     color: white;
     padding: 20px;
     border-radius: 15px;
@@ -91,40 +117,48 @@ body {
 /* Navigation Tabs */
 .nav-tabs {
     display: flex;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 18px;
     padding: 10px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    justify-content: center;
 }
 
 .nav-tab {
-    flex: 1;
-    background: none;
+    padding: 12px 20px;
     border: none;
-    padding: 15px 20px;
-    border-radius: 10px;
-    cursor: pointer;
+    background: none;
+    color: var(--text-muted);
+    font-size: 0.95rem;
     font-weight: 500;
-    color: #666;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-tab i {
+    color: inherit;
 }
 
 .nav-tab:hover {
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(102, 126, 234, 0.08);
     color: #667eea;
 }
 
 .nav-tab.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+}
+
+.nav-tab.active i {
+    color: white !important;
 }
 
 /* Tab Content */
@@ -138,8 +172,31 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /* Dashboard Grid */
@@ -151,21 +208,28 @@ body {
 }
 
 .dashboard-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
 }
 
 .dashboard-card h3 {
-    margin-bottom: 20px;
-    color: #333;
-    font-weight: 600;
+    margin-bottom: 24px;
+    color: #1a202c;
+    font-weight: 700;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .dashboard-card h3 i {
@@ -194,10 +258,14 @@ body {
 }
 
 .progress-percentage {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #667eea;
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     display: block;
+    line-height: 1;
+    margin-bottom: 5px;
 }
 
 .progress-label {
@@ -304,21 +372,141 @@ body {
 
 /* Today's Habits */
 .today-habits {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.today-habits h3 {
+.section-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 25px;
-    color: #333;
-    font-weight: 600;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.section-header-flex h3 {
+    margin-bottom: 0;
+    color: #1a202c;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.habit-filters-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.habit-filters-scroll::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
+.habit-filters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.filter-chip {
+    padding: 8px 16px;
+    border-radius: 50px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border: 1px solid transparent;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
+}
+
+.filter-chip i {
+    font-size: 0.8rem;
+}
+
+.filter-chip:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.filter-chip.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.filter-chip.btn-add-list {
+    background: #fff;
+    border: 1px dashed #cbd5e0;
+    color: #667eea;
+}
+
+.filter-chip.btn-add-list:hover {
+    border-style: solid;
+    border-color: #667eea;
+}
+
+.list-selection-grid {
+    display: grid;
+    gap: 6px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-top: 10px;
+}
+
+.form-group label.selection-item {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    margin-bottom: 0;
+    background: #f8fafc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border: 1px solid #cbd5e0;
+}
+
+.form-group label.selection-item:hover {
+    background: #f1f5f9;
+    border-color: #a0aec0;
+}
+
+.form-group label.selection-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.form-group label.selection-item .habit-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #334155;
+    margin-bottom: 0;
+}
+
+.form-group label.selection-item .habit-cat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    font-size: 0.9rem;
 }
 
 .habits-grid {
@@ -327,29 +515,8 @@ body {
     gap: 20px;
 }
 
-.habit-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    border-left: 4px solid;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
+/* Old card styles removed */
 
-.habit-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.habit-card.completed {
-    background: linear-gradient(135deg, rgba(17, 153, 142, 0.1), rgba(56, 239, 125, 0.1));
-    border-left-color: #11998e;
-}
-
-.habit-card.incomplete {
-    border-left-color: #fc466b;
-}
 
 .habit-header {
     display: flex;
@@ -453,71 +620,123 @@ body {
 
 .habits-list {
     display: grid;
-    gap: 20px;
+    gap: 16px;
 }
 
 .habit-item {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 18px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     display: flex;
-    justify-content: between;
+    justify-content: space-between;
     align-items: center;
-    border-left: 4px solid;
+    border-left: 5px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.habit-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .habit-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .habit-info h4 {
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #333;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1a202c;
+    letter-spacing: -0.01em;
 }
 
-.habit-info p {
-    color: #666;
+.habit-desc {
+    color: #718096;
     font-size: 0.9rem;
-    margin-bottom: 10px;
+    margin: 0;
+    line-height: 1.4;
 }
 
 .habit-meta {
     display: flex;
-    gap: 20px;
-    font-size: 0.85rem;
-    color: #888;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #f7fafc;
+    color: #4a5568;
+    border: 1px solid #edf2f7;
+}
+
+.meta-tag i {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.meta-tag.tag-category {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.meta-tag.tag-streak {
+    background: rgba(255, 152, 0, 0.1);
+    color: #f57c00;
+    border-color: rgba(255, 152, 0, 0.2);
 }
 
 .habit-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    margin-left: 20px;
 }
 
-.btn-small {
-    padding: 8px 15px;
+.btn-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
-    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    font-size: 1rem;
 }
 
-.btn-edit {
-    background: #667eea;
+.btn-edit-new {
+    background: #ebf4ff;
+    color: #3182ce;
+}
+
+.btn-edit-new:hover {
+    background: #3182ce;
     color: white;
 }
 
-.btn-delete {
-    background: #fc466b;
-    color: white;
+.btn-delete-new {
+    background: #fff5f5;
+    color: #e53e3e;
 }
 
-.btn-small:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+.btn-delete-new:hover {
+    background: #e53e3e;
+    color: white;
 }
 
 /* Analytics */
@@ -582,51 +801,71 @@ body {
     font-size: 0.9rem;
 }
 
-/* Calendar */
+/* Calendar Header (Navigation) */
 .calendar-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 40px;
     margin-bottom: 30px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 16px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .calendar-header button {
-    background: #667eea;
-    color: white;
+    background: #f1f5f9;
+    color: #64748b;
     border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
 }
 
 .calendar-header button:hover {
-    background: #5a67d8;
-    transform: scale(1.1);
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
 }
 
 .calendar-header h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e293b;
+    min-width: 200px;
+    text-align: center;
+    text-transform: capitalize;
 }
 
+/* Calendar Grid */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    gap: 12px;
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: 700;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .calendar-day {
@@ -635,49 +874,173 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 18px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    min-height: 80px;
+    background: #f8fafc;
+    border: 1px solid transparent;
 }
 
-.calendar-day.header {
-    font-weight: 600;
-    color: #667eea;
-    cursor: default;
+.calendar-day:hover {
+    transform: scale(1.05);
+    background: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    border-color: #e2e8f0;
+    z-index: 2;
 }
 
 .calendar-day.other-month {
-    color: #ccc;
+    opacity: 0.3;
 }
 
 .calendar-day.today {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    border: none;
+}
+
+.calendar-day.today .day-num {
+    font-size: 1.4rem;
     color: white;
 }
 
-.calendar-day:hover:not(.header) {
-    background: rgba(102, 126, 234, 0.1);
-}
-
-.calendar-day-number {
+.day-num {
+    font-size: 1.15rem;
     font-weight: 500;
-    margin-bottom: 5px;
+    color: #1e293b;
+    z-index: 1;
 }
 
-.calendar-progress {
-    width: 20px;
-    height: 3px;
-    border-radius: 2px;
-    background: #ddd;
-    overflow: hidden;
+/* Индикатор Heatmap */
+.calendar-day.has-activity:not(.today) {
+    /* Фоновый цвет задается через JS */
 }
 
-.calendar-progress-bar {
+.calendar-day.has-activity:not(.today) .day-num {
+    color: #4338ca;
+    font-weight: 600;
+}
+
+/* Маленькая точка снизу */
+.day-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 4px;
+    position: absolute;
+    bottom: 12px;
+}
+
+.today .day-dot {
+    background: white !important;
+}
+
+/* ========================
+   УМНАЯ МОДАЛКА С ПРИЖАТЫМИ КНОПКАМИ
+   ======================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #11998e, #38ef7d);
-    transition: width 0.3s ease;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 0px;
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.smart-modal {
+    max-width: 500px;
+    width: 100%;
+    max-height: 92vh;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Шапка */
+.modal-header {
+    padding: 24px 28px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+    /* Не сжимается */
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Прокручиваемая область формы */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 28px 20px;
+    min-height: 0;
+    /* Важно для flex */
+}
+
+/* Подвал с кнопками (всегда внизу) */
+.modal-footer {
+    padding: 20px 28px 28px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.modal-footer .btn-secondary,
+.modal-footer .btn-primary {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 1.05rem;
+}
+
+/* Улучшение полей */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group label i {
+    color: #667eea;
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
 }
 
 /* Modal */
@@ -688,8 +1051,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.65);
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -703,16 +1065,18 @@ body {
 }
 
 .modal-content {
-    background: white;
-    border-radius: 20px;
+    background: var(--card-bg, white);
+    border-radius: 24px !important;
     padding: 0;
     max-width: 500px;
     width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: 92vh;
+    overflow-y: auto !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     transform: scale(0.9);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal.show .modal-content {
@@ -725,6 +1089,69 @@ body {
     align-items: center;
     padding: 25px 30px;
     border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    background: inherit;
+    z-index: 10;
+}
+
+.habit-filters-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mood-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.mood-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: #f8f9ff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mood-btn.active {
+    border-color: #667eea;
+    background: #667eea15;
+}
+
+.mood-emoji {
+    font-size: 1.5rem;
+}
+
+.mood-label {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+#habitFilterSelect {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e0;
+    outline: none;
+    cursor: pointer;
+    background: white;
+    font-family: inherit;
+}
+
+.section-header-flex {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
 }
 
 .modal-header h3 {
@@ -766,11 +1193,28 @@ form {
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e1e1e1;
-    border-radius: 10px;
+    padding: 12px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
     font-size: 0.95rem;
-    transition: border-color 0.3s ease;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    background-color: #f8fafc;
+    color: #1a202c;
+}
+
+.form-group input::placeholder {
+    color: #a0aec0;
+}
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23667eea'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 18px;
+    padding-right: 45px !important;
 }
 
 .form-group input:focus,
@@ -778,7 +1222,8 @@ form {
 .form-group textarea:focus {
     outline: none;
     border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
 .form-group textarea {
@@ -788,42 +1233,89 @@ form {
 
 .days-selector {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 4px 0;
 }
 
-.days-selector label {
+.day-chip {
+    flex: 1;
+    position: relative;
+}
+
+.day-chip input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.day-chip span {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: #f8f9fa;
-    padding: 8px 12px;
-    border-radius: 8px;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: normal;
+    border: 2px solid transparent;
 }
 
-.days-selector label:hover {
-    background: #e9ecef;
+.day-chip:hover span {
+    background: #e2e8f0;
 }
 
-.days-selector input[type="checkbox"] {
-    width: auto;
+.day-chip input[type="checkbox"]:checked+span {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.days-selector input[type="checkbox"]:checked + span {
-    color: #667eea;
-    font-weight: 500;
+.day-chip input[type="checkbox"]:focus+span {
+    border-color: #667eea;
 }
 
-.form-actions {
+.modal-footer {
     display: flex;
     gap: 15px;
     justify-content: flex-end;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
+    padding: 24px 30px;
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+}
+
+/* Password Toggle */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 45px !important;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    color: #a0aec0;
+    cursor: pointer;
+    transition: color 0.2s;
+    z-index: 5;
+    padding: 5px;
+}
+
+.password-toggle:hover {
+    color: #667eea;
 }
 
 .btn-secondary {
@@ -845,10 +1337,12 @@ form {
 /* Toast Notification */
 .toast {
     position: fixed;
-    top: 10px;                    /* было 20px → подняли выше */
-    left: 180%;
-    transform: translateX(-50%);  /* центрируем по горизонтали */
-    right: auto;                  /* отключаем привязку к правому краю */
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    /* центрируем по горизонтали */
+    right: auto;
+    /* отключаем привязку к правому краю */
     min-width: 320px;
     max-width: 450px;
     background: linear-gradient(135deg, #11998e, #38ef7d);
@@ -880,82 +1374,678 @@ form {
     background: linear-gradient(135deg, #fc466b, #3f5efb);
 }
 
+/* Confirm Modal Specifics */
+#confirmModal .modal-content {
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#confirmModal.show .modal-content {
+    transform: scale(1);
+}
+
+.confirm-icon {
+    width: 70px;
+    height: 70px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+#confirmActionBtn:hover {
+    background: #dc2626 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+#confirmCancelBtn:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
+}
+
 /* Responsive Design */
+/* ═══════════════════════════════════════════════════════════════
+   АДАПТИВНАЯ ВЁРСТКА — МОБИЛЬНЫЕ УСТРОЙСТВА
+   Breakpoints:
+     768px  — планшеты / большие телефоны в горизонтали
+     480px  — стандартные смартфоны (iPhone SE, Pixel 4a …)
+     390px  — iPhone 14 / Pixel 7
+     360px  — небольшие Android
+═══════════════════════════════════════════════════════════════ */
+
+/* ─── 768 px: планшеты ─────────────────────────────────────── */
 @media (max-width: 768px) {
+
+    /* Контейнер */
     .container {
-        padding: 15px;
+        padding: 12px;
     }
 
+    /* Шапка */
     .header {
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
+        padding: 20px 16px;
         text-align: center;
+        border-radius: 16px;
     }
 
+    .header-content h1 {
+        font-size: 1.9rem;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    /* Статистика в шапке — строка из двух карточек */
     .header-stats {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         width: 100%;
+        gap: 10px;
     }
 
     .stat-card {
+        flex: 1 1 140px;
         justify-content: center;
+        padding: 14px 12px;
+        min-width: 130px;
+        max-width: 180px;
+        border-radius: 12px;
     }
 
+    .stat-card i {
+        font-size: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 1.6rem;
+    }
+
+    /* Навигация — горизонтальная прокрутка */
     .nav-tabs {
-        flex-direction: column;
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 8px;
+        gap: 4px;
+        border-radius: 14px;
+        justify-content: flex-start;
+        margin-bottom: 20px;
     }
 
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .habits-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .analytics-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .calendar-grid {
-        gap: 5px;
-    }
-
-    .calendar-day {
-        min-height: 60px;
-        font-size: 0.9rem;
-    }
-
-    .habits-header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-
-    .habit-item {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-content h1 {
-        font-size: 2rem;
+    .nav-tabs::-webkit-scrollbar {
+        display: none;
     }
 
     .nav-tab {
-        padding: 12px 15px;
+        flex-shrink: 0;
+        padding: 10px 14px;
+        font-size: 0.88rem;
+        border-radius: 10px;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    /* Сетки — одна колонка */
+    .dashboard-grid,
+    .habits-grid,
+    .analytics-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Карточки дашборда */
+    .dashboard-card {
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    /* Привычки на сегодня */
+    .habits-header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .habits-header h2 {
+        font-size: 1.1rem;
+    }
+
+    /* Строка привычки */
+    .habit-row {
+        padding: 12px 14px;
+        gap: 10px;
+        border-radius: 14px;
+    }
+
+    .habit-row__icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        border-radius: 9px;
+    }
+
+    .habit-row__name {
         font-size: 0.9rem;
     }
 
+    .habit-row__sub {
+        font-size: 0.78rem;
+    }
+
+    /* Кнопки управления привычкой */
+    .habit-row__counter-controls {
+        gap: 5px;
+    }
+
+    .habit-row__counter-input {
+        width: 44px;
+        font-size: 0.9rem;
+        padding: 5px 4px;
+    }
+
+    .habit-row__add-btn,
+    .habit-row__check {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    /* Мои привычки — карточки */
+    .habit-card {
+        border-radius: 14px;
+    }
+
+    .habit-card-header {
+        font-size: 1rem;
+    }
+
+    /* Фильтр */
+    .habits-filter {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .filter-select,
+    .filter-btn {
+        flex: 1 1 auto;
+        min-width: 110px;
+        font-size: 0.88rem;
+        padding: 9px 12px;
+        border-radius: 10px;
+    }
+
+    /* Кнопка + Список */
+    .list-btn {
+        padding: 9px 14px;
+        font-size: 0.88rem;
+        border-radius: 10px;
+    }
+
+    /* Календарь */
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .calendar-day {
+        min-height: 44px;
+        font-size: 0.8rem;
+        border-radius: 10px;
+        padding: 4px;
+    }
+
+    .calendar-day-header {
+        font-size: 0.72rem;
+    }
+
+    .calendar-nav {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    /* Модальные окна */
     .modal-content {
-        width: 95%;
+        width: calc(100% - 24px);
+        max-width: 100%;
+        margin: 12px;
+        border-radius: 20px;
+        max-height: 90dvh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 18px 20px 14px;
+    }
+
+    .modal-header h2,
+    .modal-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .modal-body {
+        padding: 16px 20px;
+    }
+
+    .modal-footer {
+        padding: 14px 20px 18px;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .modal-footer button,
+    .modal-footer .action-btn {
+        flex: 1;
+        font-size: 0.9rem;
+        padding: 11px 14px;
+    }
+
+    /* Форма */
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-group label {
+        font-size: 0.88rem;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 0.95rem;
+        padding: 10px 13px;
+        border-radius: 10px;
+    }
+
+    .form-row {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .form-actions {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .form-actions button {
+        flex: 1;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    /* Аналитика */
+    .analytics-card {
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .analytics-stat-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .analytics-stat-number {
+        font-size: 1.8rem;
+    }
+
+    /* Активность */
+    .activity-item {
+        gap: 10px;
+        padding: 11px 0;
+    }
+
+    .activity-icon-wrapper {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+    }
+
+    .activity-habit-name {
+        font-size: 0.87rem;
+    }
+
+    .activity-label {
+        font-size: 0.75rem;
+    }
+
+    /* Страница входа/регистрации */
+    .login-card {
+        padding: 28px 22px !important;
+        border-radius: 20px !important;
+        margin: 0 8px;
+    }
+
+    .login-card h1 {
+        font-size: 1.7rem !important;
+    }
+}
+
+/* ─── 480 px: стандартные смартфоны ────────────────────────── */
+@media (max-width: 480px) {
+
+    .container {
+        padding: 10px;
+    }
+
+    .header {
+        padding: 16px 14px;
+        border-radius: 14px;
+        margin-bottom: 14px;
+    }
+
+    .header-content h1 {
+        font-size: 1.65rem;
+    }
+
+    .header-stats {
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 12px 10px;
+        min-width: 120px;
+        gap: 10px;
+    }
+
+    .stat-card i {
+        font-size: 1.3rem;
+    }
+
+    .stat-number {
+        font-size: 1.45rem;
+    }
+
+    .stat-label {
+        font-size: 0.78rem;
+    }
+
+    /* Навигация */
+    .nav-tabs {
+        padding: 6px;
+        border-radius: 12px;
+        margin-bottom: 14px;
+    }
+
+    .nav-tab {
+        padding: 9px 12px;
+        font-size: 0.82rem;
+        border-radius: 9px;
+    }
+
+    .nav-tab i {
+        font-size: 0.85rem;
+    }
+
+    /* Сетки */
+    .dashboard-grid,
+    .habits-grid,
+    .analytics-grid {
+        gap: 12px;
+    }
+
+    .dashboard-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    /* Привычки */
+    .habit-row {
+        padding: 11px 12px;
+        gap: 9px;
+        border-radius: 12px;
+    }
+
+    .habit-row__icon {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    .habit-row__name {
+        font-size: 0.87rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 140px;
+    }
+
+    /* Счётчик привычки */
+    .habit-row__counter-input {
+        width: 38px;
+        font-size: 0.85rem;
+        padding: 4px 3px;
+    }
+
+    .habit-row__add-btn,
+    .habit-row__check,
+    .habit-row__menu-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+
+    /* Полосы-кнопки фильтра */
+    .habits-filter {
+        gap: 6px;
+    }
+
+    .filter-select {
+        font-size: 0.84rem;
+        padding: 8px 10px;
+    }
+
+    /* Модалки — на всю ширину */
+    .modal-content {
+        width: 100%;
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 92dvh;
+        overflow-y: auto;
+    }
+
+    /* Исключение: маленькие модалки подтверждения по-центру */
+    .delete-modal-content,
+    .logout-modal-content {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        border-radius: 18px;
         margin: 20px;
+        width: calc(100% - 40px);
+    }
+
+    .modal-header {
+        padding: 16px 18px 12px;
+    }
+
+    .modal-header h2,
+    .modal-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .modal-body {
+        padding: 14px 18px;
+    }
+
+    .modal-footer {
+        padding: 12px 18px 20px;
+    }
+
+    /* Форма */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px;
+        /* предотвращает авто-зум iOS */
+        padding: 10px 12px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
     }
 
     .form-actions {
         flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+    /* Календарь */
+    .calendar-day {
+        min-height: 38px;
+        font-size: 0.75rem;
+        border-radius: 8px;
+    }
+
+    .calendar-day-header {
+        font-size: 0.68rem;
+    }
+
+    /* Страница входа */
+    .login-card {
+        padding: 24px 18px !important;
+        border-radius: 18px !important;
+        margin: 0 6px;
+    }
+
+    .login-card h1 {
+        font-size: 1.5rem !important;
+    }
+
+    /* Аналитика */
+    .analytics-stat-number {
+        font-size: 1.6rem;
+    }
+
+    .analytics-stat-card {
+        padding: 12px;
+    }
+}
+
+/* ─── 390 px: iPhone 14 / Pixel 7 ──────────────────────────── */
+@media (max-width: 390px) {
+
+    .container {
+        padding: 8px;
+    }
+
+    .header-content h1 {
+        font-size: 1.45rem;
+    }
+
+    .stat-card {
+        padding: 10px 8px;
+        min-width: 110px;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+    }
+
+    .nav-tab {
+        padding: 8px 10px;
+        font-size: 0.78rem;
+    }
+
+    .habit-row {
+        padding: 10px 10px;
+        gap: 8px;
+    }
+
+    .habit-row__icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+
+    .habit-row__name {
+        font-size: 0.83rem;
+        max-width: 110px;
+    }
+
+    .habit-row__add-btn,
+    .habit-row__check,
+    .habit-row__menu-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .habit-row__counter-input {
+        width: 34px;
+        font-size: 0.82rem;
+    }
+
+    .calendar-day {
+        min-height: 34px;
+        font-size: 0.7rem;
+    }
+
+    .login-card h1 {
+        font-size: 1.35rem !important;
+    }
+}
+
+/* ─── 360 px: небольшие Android ────────────────────────────── */
+@media (max-width: 360px) {
+
+    .header-content h1 {
+        font-size: 1.3rem;
+    }
+
+    .stat-card {
+        min-width: 100px;
+        padding: 9px 7px;
+    }
+
+    .stat-number {
+        font-size: 1.2rem;
+    }
+
+    .nav-tab {
+        padding: 7px 9px;
+        font-size: 0.75rem;
+    }
+
+    /* Скрываем текст в навигации на самых маленьких — оставляем иконки */
+    .nav-tab span {
+        display: none;
+    }
+
+    .nav-tab {
+        padding: 10px;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 0.65rem;
+    }
+
+    .nav-tab i {
+        font-size: 1rem;
+    }
+
+    .habit-row__name {
+        max-width: 95px;
     }
 }
 
@@ -980,9 +2070,17 @@ form {
 
 /* Loading Animation */
 @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 .loading {
@@ -1035,12 +2133,15 @@ form {
 }
 
 .toast.success {
-    background: #11998e !important;  /* зелёный для успеха */
+    background: #11998e !important;
+    /* зелёный для успеха */
 }
 
 .toast.error {
-    background: #fc466b !important;  /* красный для ошибок */
+    background: #fc466b !important;
+    /* красный для ошибок */
 }
+
 .habit-item {
     background: white;
     border-radius: 12px;
@@ -1105,7 +2206,7 @@ form {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #777;
+    color: #ffffff;
 }
 
 .empty-state i {
@@ -1113,3 +2214,3052 @@ form {
     color: #667eea;
 }
 
+/* ========================
+   DELETE CONFIRMATION MODAL
+   ======================== */
+
+.delete-modal-content {
+    max-width: 460px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.delete-modal-content .modal-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 30px 20px;
+    border-bottom: none;
+}
+
+.warning-icon {
+    font-size: 3.5rem;
+    color: #f44336;
+    margin-bottom: 12px;
+}
+
+.delete-modal-content h2 {
+    margin: 0 0 8px 0;
+    color: #222;
+    font-size: 1.65rem;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 10px 30px 30px;
+    text-align: center;
+}
+
+.warning-text {
+    color: #d32f2f;
+    font-size: 1.08rem;
+    margin-top: 8px;
+}
+
+/* ========================
+   КНОПКИ В МОДАЛКЕ УДАЛЕНИЯ
+   ======================== */
+
+.form-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    padding: 5px 5px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.btn-secondary,
+.btn-primary,
+.btn-danger {
+    padding: 13px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 140px;
+}
+
+.btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #c8c8c8;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
+    transform: translateY(-1px);
+}
+
+/* Общий стиль для всех модалок */
+.modal-content {
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.9rem;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px 12px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.close-btn:hover {
+    color: #f44336;
+}
+
+.nav-logout {
+    color: #f44336 !important;
+}
+
+.nav-logout:hover {
+    background-color: #ffebee !important;
+    color: #d32f2f !important;
+}
+
+.nav-logout i {
+    color: #f44336;
+}
+
+/* ========================
+   МОДАЛКА ВЫХОДА ИЗ АККАУНТА
+   ======================== */
+
+.logout-modal-content {
+    max-width: 440px;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+.logout-modal-content .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-left i {
+    font-size: 1.8rem;
+    color: #f44336;
+}
+
+.logout-modal-content h2 {
+    margin: 0;
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.logout-modal-content .modal-body {
+    padding: 28px 32px;
+    text-align: center;
+    font-size: 1.08rem;
+    color: #444;
+}
+
+.logout-modal-content .modal-footer {
+    padding: 20px 28px 28px;
+    background: #f8f9fa;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #eee;
+}
+
+.logout-modal-content .btn-secondary,
+.logout-modal-content .btn-danger {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 1.05rem;
+    border-radius: 12px;
+}
+
+.logout-modal-content .btn-danger {
+    background-color: #f44336;
+}
+
+.logout-modal-content .btn-danger:hover {
+    background-color: #d32f2f;
+}
+
+.category-label {
+    color: var(--cat-color);
+    /* Берем цвет из переменной, которую передал Flask */
+    font-weight: 500;
+}
+
+.category-label {
+    color: var(--cat-color);
+    /* Берет цвет, который мы передали в style="..." */
+    font-weight: 500;
+}
+
+.category-icon {
+    margin-right: 5px;
+}
+
+/* Улучшенные карточки Привычки на сегодня */
+/* Duplicate habit-row removed */
+
+
+/* Duplicate habit-row--done removed */
+
+
+/* Иконка */
+.habit-row__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    position: relative;
+    cursor: default;
+    transition: transform 0.2s;
+}
+
+.habit-row__icon:active {
+    transform: scale(0.95);
+}
+
+.habit-row__icon::after {
+    content: '\f141';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    font-size: 0.55rem;
+    background: white;
+    color: #667eea;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: none;
+    /* Скрываем точки на десктопе */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    border: 1px solid #eee;
+}
+
+/* Название и подпись */
+.habit-row__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.habit-row__name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1f2937;
+}
+
+.habit-row__info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.habit-row__streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ff9f43;
+    background: rgba(255, 159, 67, 0.1);
+    padding: 1px 6px;
+    border-radius: 5px;
+}
+
+.habit-row__sub {
+    font-size: 0.82rem;
+    color: #6b7280;
+}
+
+/* Правая часть */
+/* Кнопка + */
+.habit-row__increment {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #667eea;
+    background: rgba(102, 126, 234, 0.08);
+    color: #667eea;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.habit-row__increment:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* старые стили чекбокса удалены */
+
+/* Меню */
+.habit-row__menu,
+.habit-row__menu-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #a0aec0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.habit-row__menu:hover,
+.habit-row__menu-btn:hover {
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    /* Выравнивание по верху */
+    gap: 15px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.activity-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.activity-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activity-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4caf50;
+    /* Цвет статуса "Выполнено" */
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.activity-time-stamp {
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.5);
+    /* Серый неброский цвет */
+    font-weight: 400;
+}
+
+.activity-habit-name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text-primary, #1a1a2e);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#todayHabitsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.habit-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #edf2f7;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.habit-row:hover {
+    background: #ffffff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    border-color: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+.habit-row--done {
+    opacity: 0.9;
+    border-color: #48bb78 !important;
+    background: #ffffff !important;
+    box-shadow: none;
+}
+
+.habit-row--done .habit-row__name {
+    text-decoration: line-through;
+    color: #718096;
+}
+
+
+/* ========================
+   КНОПКА КРЕСТИК (пропустить)
+   ======================== */
+.habit-row__skip {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid #fca5a5;
+    background: rgba(239, 68, 68, 0.06);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    color: #ef4444;
+    transition: all 0.18s;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.habit-row__skip:hover {
+    border-color: #dc2626;
+    background: rgba(220, 38, 38, 0.14);
+    color: #dc2626;
+}
+
+.habit-row__skip--active {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
+}
+
+.habit-row__skip--active:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+/* ========================
+   ПРОПУЩЕННАЯ ПРИВЫЧКА
+   ======================== */
+
+.habit-row--skipped {
+    border-color: #fca5a5 !important;
+    background: #fff5f5 !important;
+    border-left: 1px solid #fca5a5 !important;
+    /* Убираем жирную полосу, оставляя обычную рамку */
+    position: relative;
+}
+
+.habit-row--skipped .habit-row__icon {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+}
+
+.habit-row--skipped .habit-row__name {
+    color: #dc2626;
+    text-decoration: line-through;
+    text-decoration-color: #fca5a5;
+}
+
+.habit-row--skipped .habit-row__sub {
+    color: #f87171;
+}
+
+.habit-row--skipped .habit-row__streak {
+    opacity: 0.5;
+}
+
+.habit-row--skipped-badge {
+    font-size: 0.68rem;
+    color: #dc2626;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    background: #fee2e2;
+    border-radius: 4px;
+    border: 1px solid #fca5a5;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Иконка категории */
+.habit-row__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Название + подпись */
+.habit-row__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.habit-row__name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text-primary, #1a1a2e);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.habit-row__sub {
+    font-size: 0.78rem;
+    color: #888;
+}
+
+/* Правая часть: стрик + чекбокс */
+.habit-row__right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    margin-left: auto;
+    height: 28px;
+}
+
+.habit-row__streak {
+    font-size: 0.85rem;
+    color: #ff9800;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Кнопка-галочка (единый стиль для всех привычек) */
+.habit-row__check {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid #667eea;
+    background: rgba(102, 126, 234, 0.08);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #667eea;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.habit-row__check:hover {
+    background: #667eea;
+    color: #fff;
+}
+
+.habit-row__check--done {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: #fca5a5;
+    color: #ef4444;
+}
+
+.habit-row__check--done:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+/* ===== Counter block (target habits) ===== */
+.habit-row__counter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+    margin-left: auto;
+    justify-content: center;
+}
+
+.habit-row__counter-label {
+    font-size: 0.7rem;
+    color: #888;
+    white-space: nowrap;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.habit-row__counter-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 28px;
+}
+
+.habit-row__counter-input {
+    width: 52px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary, #1a1a2e);
+    background: var(--card-bg, #fff);
+    padding: 0 4px;
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.habit-row__counter-input::-webkit-outer-spin-button,
+.habit-row__counter-input::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button;
+    opacity: 1;
+}
+
+.habit-row__counter-input:focus {
+    border-color: #667eea;
+}
+
+.habit-row__add-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    padding: 0;
+}
+
+.habit-row__add-btn:hover {
+    background: rgba(102, 126, 234, 0.25);
+}
+
+/* Утилитарные стили для количественных кнопок теперь наследуют общие */
+.habit-row__counter-controls .habit-row__check {
+    /* Наследует .habit-row__check */
+}
+
+.habit-row__counter-controls .habit-row__check--done {
+    /* Наследует .habit-row__check--done */
+}
+
+/* ===== Кнопка три точки ===== */
+
+
+
+
+
+
+.note-modal textarea:focus {
+    border-color: #667eea;
+}
+
+.notes-container {
+    padding: 16px 28px 24px;
+    max-height: 420px;
+    overflow-y: scroll;
+    /* важно: не auto, а scroll */
+}
+
+/* сам скролл */
+.notes-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* трек (фон) */
+.notes-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+/* ползунок */
+.notes-container::-webkit-scrollbar-thumb {
+    background: rgba(201, 17, 17, 0.2);
+    /* всегда виден */
+    border-radius: 10px;
+}
+
+/* при наведении — чуть ярче */
+.notes-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+/* ========================
+   КНОПКА ТРИ ТОЧКИ (перенесена из index.html)
+   ======================== */
+.habit-row__menu-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid #e5e7eb;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    color: #9ca3af;
+    transition: all 0.18s;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.habit-row__menu-btn:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.08);
+    color: #667eea;
+}
+
+/* ========================
+   КОНТЕКСТНОЕ МЕНЮ — БЕМ-классы
+   ======================== */
+.habit-menu {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    border: 1px solid #eee;
+    min-width: 224px;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+.habit-menu__list {
+    padding: 6px 0;
+}
+
+.habit-menu__item {
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+    line-height: 1.2;
+}
+
+.habit-menu__item:hover {
+    background: #f8f9ff;
+}
+
+.habit-menu__icon {
+    width: 16px;
+    flex-shrink: 0;
+}
+
+.habit-menu__icon--orange {
+    color: #BA7517;
+}
+
+.habit-menu__icon--purple {
+    color: #667eea;
+}
+
+.habit-menu__divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 2px 0;
+}
+
+/* ========================
+   TEXTAREA ЗАМЕТКИ (перенесена из index.html)
+   ======================== */
+.note-textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.note-textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+}
+
+/* ========================
+   СКРОЛЛ В ПРОСМОТРЕ ЗАМЕТОК
+   ======================== */
+#notesListContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+#notesListContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#notesListContainer::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.empty-state {
+    color: #8a8f98;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.3px;
+    margin-top: 12px;
+    opacity: 0.9;
+}
+
+/* ========================
+   ПРОЗРАЧНЫЙ СКРОЛЛБАР
+   ======================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+    background-clip: content-box;
+}
+
+.notes-container {
+    padding: 16px 28px 24px;
+    max-height: 420px;
+    overflow-y: scroll;
+    /* важно */
+}
+
+.notes-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notes-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ========================
+   УЛУЧШЕННАЯ АНАЛИТИКА
+   ======================== */
+
+.analytics-container {
+    padding: 10px 0;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 24px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.chart-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.chart-header i {
+    font-size: 1.2rem;
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.chart-body {
+    position: relative;
+    width: 100%;
+    height: 280px;
+}
+
+/* Статистика в ряд */
+.stats-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.stat-card-new {
+    flex: 1;
+    min-width: 250px;
+    background: white;
+    border-radius: 20px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s;
+}
+
+.stat-card-new:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    border-color: #e2e8f0;
+}
+
+.stat-icon-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.stat-icon-circle.blue {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.stat-icon-circle.purple {
+    background: #f5f3ff;
+    color: #8b5cf6;
+}
+
+.stat-icon-circle.green {
+    background: #f0fdf4;
+    color: #10b981;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.2;
+}
+
+.stat-title {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ========================
+   ДЕТАЛИ ДНЯ (КАЛЕНДАРЬ)
+   ======================== */
+
+.day-habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s;
+}
+
+.day-habit-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.day-habit-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.day-habit-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.day-habit-icon.status-done {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.day-habit-icon.status-skipped {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.day-habit-icon.status-not-done {
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+.day-habit-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.day-habit-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.day-habit-status-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.day-habit-status-text.status-done {
+    color: #16a34a;
+}
+
+.day-habit-status-text.status-skipped {
+    color: #d97706;
+}
+
+.day-habit-status-text.status-not-done {
+    color: #94a3b8;
+}
+
+.day-habit-time {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.day-habit-notes-btn {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.day-habit-notes-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background: #f8f9ff;
+}
+
+/* Исправление z-index для модалок заметок и подтверждений */
+#noteModal,
+#viewNotesModal,
+#deleteNoteConfirmModal,
+#deleteConfirmModal,
+#logoutConfirmModal {
+    z-index: 2000;
+}
+
+/* Mood Selector in Notes */
+.mood-selector-container {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+    text-align: center;
+}
+
+.mood-title {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.mood-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.mood-btn {
+    background: #f8fafc;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 5px;
+    min-width: 65px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.mood-emoji {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.mood-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #64748b;
+    opacity: 0.8;
+    transition: all 0.2s;
+}
+
+.mood-btn:hover {
+    background: #eef2ff;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+}
+
+.mood-btn.active {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+    border: 2px solid #667eea;
+}
+
+.mood-btn.active .mood-label {
+    color: #667eea;
+    opacity: 1;
+}
+
+/* Habit Filter Select Styling */
+#habitFilterSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 8px 36px 8px 12px !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23667eea'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: 16px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    font-weight: 500;
+    color: #4a5568;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 10px !important;
+    background-color: white;
+    cursor: pointer;
+}
+
+#habitFilterSelect:hover {
+    border-color: #667eea !important;
+    background-color: #f8fafc !important;
+}
+
+#habitFilterSelect:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Note Item with Mood */
+.note-item-mood {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-right: 12px;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.note-content-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* Note Mood Tag Styling */
+.note-mood-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: #f1f5f9;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #475569;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.note-mood-tag:hover {
+    background: white;
+    border-color: #e2e8f0;
+    transform: translateX(3px);
+}
+
+.mood-tag-emoji {
+    font-size: 1rem;
+}
+
+.mood-tag-text strong {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+
+
+
+/* === PROFILE & SETTINGS STYLES === */
+.profile-container,
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 10px 0;
+}
+
+.profile-header-card {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+}
+
+.profile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+}
+
+.profile-text h2 {
+    margin-bottom: 4px;
+    font-size: 1.8rem;
+    color: #1e293b;
+}
+
+.profile-text p {
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.join-date {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    display: block;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.stats-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.mini-stat-item {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #f1f5f9;
+}
+
+.mini-stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #6366f1;
+    margin-bottom: 4px;
+}
+
+.mini-stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+}
+
+.achievement-item.locked {
+    opacity: 0.6;
+    filter: grayscale(1);
+}
+
+.achievement-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #f59e0b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.achievement-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.achievement-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.achievement-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.settings-section h3 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings-layout {
+    display: flex;
+    background: var(--card-bg);
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 600px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.settings-sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+
+    .profile-avatar-large {
+        width: 110px;
+        height: 110px;
+        background: var(--primary-gradient);
+        border-radius: 35% 65% 70% 30% / 30% 30% 70% 70%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+        animation: blob 7s linear infinite;
+    }
+
+    @keyframes blob {
+        0% {
+            border-radius: 35% 65% 70% 30% / 30% 30% 70% 70%;
+        }
+
+        25% {
+            border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+        }
+
+        50% {
+            border-radius: 65% 35% 30% 70% / 70% 70% 30% 30%;
+        }
+
+        75% {
+            border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+        }
+
+        100% {
+            border-radius: 35% 65% 70% 30% / 30% 30% 70% 70%;
+        }
+    }
+
+    .profile-header-tick h2 {
+        font-size: 1.8rem;
+        color: var(--text-main);
+        margin-bottom: 6px;
+        letter-spacing: -0.5px;
+    }
+
+    .user-status {
+        font-size: 0.85rem;
+        color: #f59e0b;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .settings-block {
+        background: rgba(0, 0, 0, 0.01);
+        border-radius: 20px;
+        margin-bottom: 30px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+
+    .dark-mode .settings-block {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-row:last-child {
+        border-bottom: none;
+    }
+
+    .row-label {
+        font-size: 1rem;
+        color: var(--text-main);
+        font-weight: 500;
+    }
+
+    .row-value {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        flex: 1;
+        text-align: right;
+        margin-right: 25px;
+    }
+
+    .row-action {
+        font-size: 0.95rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .row-action:hover {
+        opacity: 0.7;
+        transform: translateX(-2px);
+    }
+
+    .row-action.action-dim {
+        color: var(--text-muted);
+    }
+
+    .row-action.action-danger {
+        color: #f43f5e;
+    }
+
+    .settings-row-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-row-flex:last-child {
+        border-bottom: none;
+    }
+
+    .color-picker-grid {
+        display: flex;
+        gap: 10px;
+    }
+
+    .color-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .color-swatch.active {
+        border-color: var(--text-main);
+        transform: scale(1.1);
+    }
+
+    .dark-mode .settings-sidebar {
+        background: var(--sidebar-bg);
+    }
+
+    .dark-mode .settings-block {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .dark-mode .settings-row,
+    .dark-mode .settings-row-flex {
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* Settings Layout (TickTick Style) */
+.settings-layout {
+    display: flex;
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 24px;
+    min-height: 600px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.settings-sidebar {
+    width: 260px;
+    background: rgba(0, 0, 0, 0.02);
+    border-right: 1px solid var(--border-color);
+    padding: 24px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sidebar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+}
+
+.sidebar-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-item:hover {
+    background: rgba(102, 126, 234, 0.08);
+    color: #667eea;
+}
+
+.sidebar-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.settings-main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background: transparent;
+}
+
+.settings-pane {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+    max-width: 700px;
+}
+
+.settings-pane.active {
+    display: block;
+}
+
+.settings-pane h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 24px;
+}
+
+/* Profile Header */
+.profile-header-tick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #64748b;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.profile-header-tick h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.user-status {
+    font-size: 0.9rem;
+    color: #667eea;
+    font-weight: 600;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+/* Settings Block & Rows */
+.settings-block {
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background 0.2s ease;
+}
+
+.settings-row:last-child {
+    border-bottom: none;
+}
+
+.row-label {
+    flex: 1;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.row-value {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-right: 20px;
+}
+
+.row-action {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.row-action:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.row-action.action-dim {
+    color: #94a3b8;
+}
+
+.row-action.action-danger {
+    color: #ef4444;
+}
+
+.row-action.action-danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.settings-row-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.settings-row-flex:last-child {
+    border-bottom: none;
+}
+
+.setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.setting-title {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.setting-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Switch UI */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e2e8f0;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:checked+.slider {
+    background-color: #667eea;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #667eea;
+}
+
+input:checked+.slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Color Picker UI */
+.color-picker-grid {
+    display: flex;
+    gap: 12px;
+}
+
+.color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid white;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.active {
+    box-shadow: 0 0 0 2px #667eea;
+    transform: scale(1.15);
+}
+
+/* Responsive Settings */
+@media (max-width: 768px) {
+    .settings-layout {
+        flex-direction: column;
+    }
+
+    .settings-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 16px;
+    }
+
+    .sidebar-group {
+        display: contents;
+    }
+
+    .sidebar-item {
+        width: 100%;
+        white-space: nowrap;
+        justify-content: center;
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+
+    .settings-main {
+        padding: 16px;
+    }
+
+    .settings-row, .settings-row-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .row-label {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    .row-value {
+        margin-right: 0;
+        text-align: left;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .row-action {
+        align-self: flex-start;
+        padding: 6px 0;
+    }
+    
+    .settings-sidebar::-webkit-scrollbar {
+        display: none; /* Hide scrollbar for top menu on mobile */
+    }
+}
+
+/* Color Accent Presets */
+.color-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.color-option {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    position: relative;
+    border: 2px solid transparent;
+}
+
+.color-option:hover {
+    transform: scale(1.15);
+}
+
+.color-option.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px var(--card-bg), 0 0 0 5px var(--primary-color);
+}
+
+.color-option.active::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: white;
+    font-size: 0.9rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.settings-time-input {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.settings-time-input:focus {
+    border-color: var(--primary-color);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   МОБИЛЬНЫЕ УЛУЧШЕНИЯ — касания, безопасные зоны, scroll
+═══════════════════════════════════════════════════════════════ */
+
+/* Безопасные зоны (notch / home indicator на iOS) */
+@supports (padding: max(0px)) {
+    .container {
+        padding-left: max(8px, env(safe-area-inset-left));
+        padding-right: max(8px, env(safe-area-inset-right));
+    }
+
+    .modal-content {
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+
+    @media (max-width: 480px) {
+        .modal-content {
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
+        }
+    }
+}
+
+/* Улучшение касаний — убираем задержку 300 мс */
+a,
+button,
+.nav-tab,
+.habit-row,
+.calendar-day,
+.habit-row__check,
+.habit-row__add-btn,
+.habit-row__menu-btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Минимальная область касания 44×44 по WCAG */
+@media (max-width: 768px) {
+
+    .habit-row__check,
+    .habit-row__add-btn,
+    .habit-row__menu-btn {
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    .nav-tab {
+        min-height: 44px;
+    }
+}
+
+/* Плавная прокрутка на мобильных */
+@media (max-width: 768px) {
+    .nav-tabs {
+        scroll-snap-type: x mandatory;
+        justify-content: flex-start;
+        overflow-x: auto !important;
+        padding-bottom: 12px !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+        height: 5px !important;
+        display: block !important;
+    }
+
+    .nav-tabs::-webkit-scrollbar-thumb {
+        background: var(--primary-color) !important;
+        border-radius: 10px;
+        border: 1px solid white;
+    }
+
+    .nav-tabs::-webkit-scrollbar-track {
+        background: rgba(102, 126, 234, 0.1) !important;
+        margin: 0 15px;
+        border-radius: 10px;
+    }
+
+    .nav-tab {
+        scroll-snap-align: start;
+    }
+
+    /* Запрет горизонтального переполнения */
+    .habit-row,
+    .dashboard-card,
+    .analytics-card {
+        overflow: visible;
+    }
+
+    /* ─── Шапка «Привычки на сегодня» ─── */
+    .section-header-flex {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .section-header-flex h3 {
+        text-align: left;
+        font-size: 1.05rem;
+        margin-bottom: 0;
+    }
+
+    /* Строка фильтр + кнопки */
+    .habit-filters-dropdown {
+        display: flex;
+        width: 100%;
+        gap: 6px;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    /* Унифицированный стиль для селекта и кнопок в шапке */
+    #habitFilterSelect,
+    .habit-filters-dropdown button,
+    #deleteListBtn {
+        height: 38px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #475569;
+        padding: 0 12px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    #habitFilterSelect {
+        flex: 1;
+        min-width: 0;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 14px;
+        padding-right: 28px;
+    }
+
+    .habit-filters-dropdown button {
+        flex-shrink: 0;
+        background: #ffffff;
+        color: #667eea;
+        border-color: rgba(102, 126, 234, 0.2);
+    }
+
+    .section-header-flex>button {
+        flex-shrink: 0;
+    }
+
+    /* ─── Модальные окна на мобильном ─── */
+
+    /* По умолчанию все модалки — по центру */
+    .modal {
+        align-items: center;
+        padding: 0 12px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 20px !important;
+        max-height: 90dvh;
+        overflow-y: auto;
+    }
+
+    .modal-body {
+        padding: 16px 18px 20px;
+    }
+
+    /* noteModal и habitModal — снизу (bottom sheet) */
+    #noteModal,
+    #habitModal,
+    #customListModal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    #noteModal .modal-content,
+    #habitModal .modal-content,
+    #customListModal .modal-content {
+        border-radius: 24px 24px 0 0 !important;
+        max-height: 92dvh;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    /* viewNotesModal — по центру, ограниченная высота */
+    #viewNotesModal {
+        align-items: center;
+        padding: 0 12px;
+    }
+
+    #viewNotesModal .modal-content {
+        border-radius: 20px !important;
+        max-height: 75dvh;
+    }
+
+    /* Маленькие подтверждающие модалки — по центру */
+    #deleteConfirmModal,
+    #logoutConfirmModal,
+    #deleteNoteConfirmModal,
+    #dayDetailsModal {
+        align-items: center;
+        padding: 0 16px;
+    }
+
+    #deleteConfirmModal .modal-content,
+    #logoutConfirmModal .modal-content,
+    #deleteNoteConfirmModal .modal-content,
+    #dayDetailsModal .modal-content {
+        border-radius: 18px !important;
+        max-height: 80dvh;
+    }
+
+    /* ─── habit-row мобильный ─── */
+
+    /* Обычная привычка (без счётчика): горизонтально */
+    .habit-row {
+        padding: 8px 10px;
+        gap: 6px;
+        min-height: auto;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    .habit-row__body {
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0px;
+    }
+
+    .habit-row__icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        position: relative !important;
+        cursor: pointer !important;
+    }
+
+
+
+    .habit-row__name {
+        white-space: normal;
+        word-break: break-word;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.1;
+    }
+
+    .habit-row__sub {
+        font-size: 0.72rem;
+        color: #667eea;
+        font-weight: 500;
+        margin-top: 1px;
+    }
+
+    .habit-row__streak {
+        font-size: 0.72rem;
+        margin-left: 0;
+        background: rgba(255, 159, 67, 0.1);
+        color: #ff9f43;
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    /* Правая часть (чекбокс + меню) */
+    .habit-row__right {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Счётчик количественной привычки */
+    .habit-row__counter {
+        flex-shrink: 0;
+        align-items: center;
+        flex-direction: row;
+        gap: 0;
+        margin-left: 0;
+    }
+
+    .habit-row__counter-controls {
+        display: flex;
+        align-items: center;
+        background: rgba(102, 126, 234, 0.05);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        padding: 2px;
+        border-radius: 8px;
+        gap: 2px;
+    }
+
+    /* Метка «0 / 3 раза» */
+    .habit-row__counter-label {
+        display: none;
+        /* скрываем вертикальный лейбл, он дублирует sub */
+    }
+
+    .habit-row__counter-input {
+        width: 32px !important;
+        height: 28px !important;
+        font-size: 0.85rem !important;
+        background: white !important;
+        border: none !important;
+        border-radius: 6px 0 0 6px !important;
+        text-align: center;
+    }
+
+    .habit-row__add-btn {
+        width: 28px !important;
+        height: 28px !important;
+        background: #667eea !important;
+        color: white !important;
+        border-radius: 0 6px 6px 0 !important;
+        font-size: 0.75rem !important;
+    }
+
+    .habit-row__check {
+        width: 30px !important;
+        height: 30px !important;
+        margin-left: 4px;
+        border-radius: 8px !important;
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #10b981 !important;
+    }
+
+    .habit-row__check--done {
+        background: #10b981 !important;
+        color: white !important;
+        border-color: #10b981 !important;
+    }
+
+    /* ─── Модалка заметок ─── */
+
+    /* Поле ввода заметки */
+    .note-textarea {
+        min-height: 100px !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 14px !important;
+        padding: 12px !important;
+        font-size: 1rem !important;
+        transition: all 0.2s !important;
+        background: #f8fafc !important;
+    }
+
+    .note-textarea:focus {
+        background: white !important;
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1) !important;
+    }
+
+    /* Mood — фиксированная ширина для идеального центрирования */
+    .mood-options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 15px;
+        padding: 0 10px;
+    }
+
+    .mood-btn {
+        width: 88px;
+        flex: 0 0 auto;
+        padding: 10px 5px;
+        background: white;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    /* ─── Список заметок ─── */
+    .note-date-group {
+        margin-bottom: 24px;
+    }
+
+    .note-date-header {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .note-date-header::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #f1f5f9;
+    }
+
+    .note-item {
+        background: #f8fafc;
+        border-radius: 14px;
+        padding: 12px 16px;
+        border-left: 4px solid #667eea;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .note-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .note-time {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #94a3b8;
+    }
+
+    .note-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .note-actions button {
+        background: none;
+        border: none;
+        padding: 4px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+
+    .note-actions .note-edit-btn {
+        color: #667eea;
+    }
+
+    .note-actions .note-delete-btn {
+        color: #ef4444;
+    }
+
+    .note-actions button:active {
+        opacity: 1;
+    }
+
+    .note-body {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #334155;
+        white-space: pre-wrap;
+    }
+
+    .note-mood-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        margin-top: 10px;
+        border: 1px solid #f1f5f9;
+        color: #64748b;
+    }
+
+    .mood-badge-emoji {
+        font-size: 1rem;
+    }
+
+    .mood-btn.active {
+        transform: scale(1.05);
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    }
+
+    .mood-btn:active {
+        transform: scale(0.95);
+    }
+
+    .mood-selector-container {
+        margin-top: 14px;
+        padding-top: 14px;
+    }
+
+    .mood-title {
+        font-size: 0.82rem;
+        margin-bottom: 10px;
+    }
+
+    .mood-emoji {
+        font-size: 1.4rem;
+    }
+
+    .mood-label {
+        font-size: 0.65rem;
+    }
+
+    /* Заголовки карточек */
+    .card-title,
+    .dashboard-card h3,
+    .dashboard-card h2 {
+        font-size: 1rem;
+    }
+
+    /* Прогресс сегодня — уменьшаем canvas */
+    #todayProgressChart {
+        max-width: 180px;
+        max-height: 180px;
+        margin: 0 auto;
+    }
+
+    /* Процент прогресса */
+    #todayPercentage {
+        font-size: 2.2rem;
+    }
+}
+
+/* ─── Страницы авторизации на мобильном ─────────────────────── */
+@media (max-width: 480px) {
+
+    /* Плавающая карточка с закругленными углами на мобильных */
+    body>.container>.login-card,
+    body>.container>.dashboard-card.login-card {
+        width: 100%;
+        max-width: 100% !important;
+        margin: 16px auto;
+        border-radius: 24px !important;
+        min-height: auto;
+        padding: 35px 20px !important;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Кнопки формы — полная ширина */
+    .login-card .action-btn {
+        padding: 13px;
+        font-size: 0.95rem;
+        border-radius: 12px;
+    }
+
+    /* Input font-size 16px — предотвращает зум на iOS */
+    .login-card input {
+        font-size: 16px !important;
+    }
+}
+
+/* ─── Критическое исправление: календарь не вылезает за карточку ─ */
+@media (max-width: 768px) {
+
+    .calendar-container,
+    #calendarGrid {
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* Месяц навигация */
+    .calendar-nav,
+    .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .calendar-nav button,
+    .calendar-header button {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: none;
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        touch-action: manipulation;
+    }
+}
+
+/* ─── Компактность today-habits на мобильном ─── */
+@media (max-width: 768px) {
+    .today-habits {
+        padding: 18px 14px;
+        border-radius: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .today-habits {
+        padding: 12px 8px;
+        border-radius: 16px;
+    }
+
+    /* today-habits заголовок */
+    .section-header-flex h3 {
+        font-size: 0.98rem;
+        font-weight: 700;
+    }
+
+    /* Строка habit-row */
+    #todayHabitsGrid {
+        gap: 6px;
+    }
+
+    /* Количественная привычка — sub (0 / 3 раза) читабельно */
+    .habit-row__sub {
+        font-size: 0.75rem;
+        color: #667eea;
+        font-weight: 500;
+    }
+
+    /* Модалка заметок — уменьшаем отступы */
+    #noteModal .modal-header,
+    #noteModal .modal-body,
+    #noteModal .modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    #noteModal .modal-header {
+        padding-top: 16px;
+        padding-bottom: 10px;
+    }
+
+    #noteModal .modal-footer {
+        padding-top: 10px;
+        padding-bottom: 16px;
+        gap: 8px;
+    }
+
+    #noteModal .modal-footer button {
+        flex: 1;
+        padding: 11px;
+        font-size: 0.9rem;
+    }
+
+    /* viewNotesModal */
+    #viewNotesModal .modal-header {
+        padding: 14px 16px 10px;
+    }
+
+    #viewNotesModal .modal-body {
+        padding: 12px 16px 16px;
+        max-height: 55dvh;
+        overflow-y: auto;
+    }
+
+    /* Сжатие модального окна привычек */
+    #habitModal .modal-header {
+        padding: 12px 16px 8px;
+    }
+
+    #habitModal .modal-body {
+        padding: 8px 16px 12px;
+    }
+
+    #habitModal .form-group {
+        margin-bottom: 10px;
+    }
+
+    #habitModal .form-group label {
+        margin-bottom: 4px;
+        font-size: 0.85rem;
+    }
+
+    #habitModal .form-group input,
+    #habitModal .form-group select {
+        padding: 8px 12px;
+        font-size: 0.95rem;
+    }
+
+    #habitModal .form-group textarea {
+        padding: 8px 12px;
+        font-size: 0.95rem;
+        min-height: 60px;
+        height: 60px;
+    }
+
+    #habitModal .modal-footer {
+        padding: 10px 16px 16px;
+        gap: 8px;
+    }
+
+    #habitModal .modal-footer button {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ─── Переопределяем inline max-width модалок на мобильном ─── */
+@media (max-width: 480px) {
+
+    #noteModalContent,
+    #viewNotesModalContent {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+
+
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   МОБИЛЬНЫЕ СКРОЛЛИРУЕМЫЕ ГРАФИКИ (mobile-charts.js)
+═══════════════════════════════════════════════════════════════ */
+
+/* Контейнер-viewport: скрывает горизонтальное переполнение */
+.mobile-scroll-chart {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #fafafa;
+    /* Минимальная высота canvas + подписи */
+    min-height: 220px;
+}
+
+/* Прокручиваемая область */
+.mobile-chart-inner {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+    /* Тихий ресайз при изменении ориентации */
+    transition: width 0.3s;
+}
+
+.mobile-chart-inner::-webkit-scrollbar {
+    display: none;
+}
+
+.mobile-chart-inner:active {
+    cursor: grabbing;
+}
+
+/* Canvas внутри */
+.mobile-chart-inner canvas {
+    display: block;
+    touch-action: pan-x;
+}
+
+/* Тултип при нажатии */
+.mobile-chart-tooltip {
+    display: none;
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.92);
+    color: #fff;
+    border-radius: 14px;
+    padding: 10px 16px;
+    text-align: center;
+    pointer-events: none;
+    z-index: 10;
+    min-width: 160px;
+    max-width: 240px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.mobile-chart-tooltip[style*="block"] {
+    opacity: 1;
+}
+
+/* Строки тултипа */
+.mct-date {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2px;
+    font-weight: 400;
+}
+
+.mct-main {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.mct-sub {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Подсказка «свайп» — появляется один раз */
+.mobile-scroll-chart::after {
+    content: '← свайп →';
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    font-size: 0.65rem;
+    color: #d1d5db;
+    pointer-events: none;
+    animation: fadeHint 3s ease 1.5s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeHint {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* ─── На desktop скрываем мобильные элементы ─── */
+@media (min-width: 769px) {
+    .mobile-scroll-chart {
+        display: none !important;
+    }
+
+    .desktop-chart-body {
+        display: block !important;
+    }
+}
+
+/* ─── На мобильном скрываем desktop Chart.js ─── */
+@media (max-width: 768px) {
+    .desktop-chart-body {
+        display: none !important;
+    }
+
+    .mobile-scroll-chart {
+        display: block !important;
+    }
+
+    /* Карточки не обрезают overflow */
+    #monthlyChartCard,
+    #skipChartCard {
+        overflow: visible;
+    }
+
+    /* chart-body не нужна фиксированная высота на мобильном */
+    #monthlyChartCard .chart-body,
+    #skipChartCard .chart-body {
+        height: auto;
+    }
+}
+
+/* ========================
+   EMPTY STATE (НЕТ ПРИВЫЧЕК)
+   ======================== */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.85));
+    border-radius: var(--border-radius, 15px);
+    box-shadow: var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.05));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.5));
+    margin-top: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.empty-state h3 {
+    margin: 15px 0 10px;
+    color: var(--text-main, #333);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.empty-state p {
+    color: var(--text-muted, #666);
+    font-size: 1rem;
+}
+
+/* ========================
+   NOTES VIEWER CSS
+   ======================== */
+#viewNotesModalContent {
+    text-align: left; /* Переопределяем выравнивание по центру от модалки */
+}
+
+.note-date-group {
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.note-date-header {
+    font-weight: 600;
+    color: var(--text-main, #333);
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--glass-border, rgba(0,0,0,0.05));
+}
+
+.note-item {
+    background: var(--glass-bg, #fff);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    border: 1px solid var(--glass-border, rgba(0,0,0,0.05));
+    border-left: 4px solid #667eea; /* Dynamic color via JS */
+    transition: transform 0.2s;
+    text-align: left;
+}
+
+.note-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.note-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.note-time {
+    font-size: 0.85rem;
+    color: var(--text-muted, #888);
+    font-weight: 500;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.note-edit-btn, .note-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 4px;
+    color: var(--text-muted, #999);
+    transition: color 0.2s;
+}
+
+.note-edit-btn:hover { color: var(--accent-color, #667eea); }
+.note-delete-btn:hover { color: #f44336; }
+
+.note-body {
+    font-size: 0.95rem;
+    color: var(--text-main, #444);
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.note-mood-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 10px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: var(--text-main, #555);
+    border: 1px solid var(--glass-border, #eee);
+}
+
+.mood-badge-emoji {
+    font-size: 1.1rem;
+}
