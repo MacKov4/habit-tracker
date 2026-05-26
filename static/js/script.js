@@ -361,10 +361,33 @@ class HabitTracker {
         }
 
         const clearDataBtnTick = document.getElementById('clearDataBtnTick');
-        if (clearDataBtnTick) {
+        const clearDataConfirmModal = document.getElementById('clearDataConfirmModal');
+        if (clearDataBtnTick && clearDataConfirmModal) {
             clearDataBtnTick.addEventListener('click', () => {
-                if (confirm('Вы уверены, что хотите удалить все данные? Это действие необратимо.')) {
-                    this.showToast('Данные успешно очищены (демо)', false);
+                clearDataConfirmModal.classList.add('show');
+            });
+            
+            document.getElementById('closeClearDataModal').addEventListener('click', () => {
+                clearDataConfirmModal.classList.remove('show');
+            });
+            
+            document.getElementById('cancelClearDataBtn').addEventListener('click', () => {
+                clearDataConfirmModal.classList.remove('show');
+            });
+            
+            document.getElementById('confirmClearDataBtn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/clear_data', { method: 'POST' });
+                    if (response.ok) {
+                        this.showToast('Данные успешно очищены', false);
+                        clearDataConfirmModal.classList.remove('show');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        this.showToast('Ошибка при очистке данных', true);
+                    }
+                } catch (error) {
+                    console.error('Clear data error:', error);
+                    this.showToast('Ошибка при очистке данных', true);
                 }
             });
         }

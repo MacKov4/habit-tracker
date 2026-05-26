@@ -5263,3 +5263,202 @@ button,
 .mood-badge-emoji {
     font-size: 1.1rem;
 }
+
+/* Dark Mode Overrides for all tabs */
+.dark-mode .today-habits,
+.dark-mode .habits-header,
+.dark-mode .habit-item,
+.dark-mode .habit-row,
+.dark-mode .chart-card,
+.dark-mode .stat-item,
+.dark-mode .stat-card-new,
+.dark-mode .glass-card,
+.dark-mode .calendar-header,
+.dark-mode .calendar-grid,
+.dark-mode .calendar-day,
+.dark-mode .modal-content,
+.dark-mode .form-group label.selection-item,
+.dark-mode #habitFilterSelect,
+.dark-mode .habit-menu,
+.dark-mode .smart-modal,
+.dark-mode .modal-footer,
+.dark-mode .form-actions,
+.dark-mode .mood-btn,
+.dark-mode .note-item,
+.dark-mode .note-textarea {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dark-mode .dashboard-card h3,
+.dark-mode .section-header-flex h3,
+.dark-mode .habit-title,
+.dark-mode .habits-header h2,
+.dark-mode .habit-info h4,
+.dark-mode .habit-row__name,
+.dark-mode .chart-card h3,
+.dark-mode .chart-header h3,
+.dark-mode .stat-value,
+.dark-mode .calendar-header h2,
+.dark-mode .day-num,
+.dark-mode .modal-header h2,
+.dark-mode .modal-header h3,
+.dark-mode .form-group label,
+.dark-mode .form-group label.selection-item .habit-name,
+.dark-mode .row-label,
+.dark-mode .profile-header-tick h2,
+.dark-mode .activity-habit-name {
+    color: var(--text-main) !important;
+}
+
+.dark-mode .habit-desc,
+.dark-mode .habit-row__sub,
+.dark-mode .habit-row__streak,
+.dark-mode .stat-title,
+.dark-mode .calendar-day-header,
+.dark-mode .mood-label,
+.dark-mode .subtitle,
+.dark-mode .progress-label,
+.dark-mode .activity-time-stamp {
+    color: var(--text-muted) !important;
+}
+
+.dark-mode .meta-tag {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+}
+
+.dark-mode input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.dark-mode select,
+.dark-mode textarea {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dark-mode .habit-item:hover,
+.dark-mode .habit-row:hover,
+.dark-mode .calendar-day:hover,
+.dark-mode .form-group label.selection-item:hover {
+    background-color: rgba(40, 50, 70, 0.9) !important;
+}
+
+.dark-mode .filter-chip {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+}
+
+.dark-mode .filter-chip.active {
+    background: var(--primary-gradient) !important;
+    color: white !important;
+}
+
+.dark-mode .filter-chip.btn-add-list {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark-mode .calendar-day.today {
+    background: var(--primary-gradient) !important;
+    color: white !important;
+}
+.dark-mode .calendar-day.today .day-num {
+    color: white !important;
+}
+.dark-mode .calendar-header button {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+}
+.dark-mode .calendar-header button:hover {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.dark-mode .btn-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.dark-mode .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f1f5f9;
+    border-radius: 16px;
+    margin: 10px 0;
+}
+.empty-state h3 {
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+.empty-state p {
+    color: #64748b;
+}
+
+.dark-mode .empty-state {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+.dark-mode .empty-state h3 {
+    color: var(--text-main) !important;
+}
+.dark-mode .empty-state p {
+    color: var(--text-muted) !important;
+}
+
+/* Google login button */
+.google-btn {
+    background: white;
+    color: #444;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.google-btn:hover {
+    background: #f8fafc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+}
+
+/* Dark mode: settings, modals, misc */
+.dark-mode .settings-block {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: var(--border-color) !important;
+}
+.dark-mode .settings-row,
+.dark-mode .settings-row-flex {
+    border-color: var(--border-color) !important;
+}
+.dark-mode .setting-title {
+    color: var(--text-main) !important;
+}
+.dark-mode .setting-desc {
+    color: var(--text-muted) !important;
+}
+.dark-mode .row-value {
+    color: var(--text-muted) !important;
+}
+.dark-mode .row-action {
+    color: var(--primary-color, #667eea) !important;
+}
+.dark-mode .modal-body p {
+    color: var(--text-muted) !important;
+}
+.dark-mode .google-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.dark-mode .google-btn:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+.dark-mode .dashboard-card {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+.dark-mode .habits-list {
+    background: transparent !important;
+}

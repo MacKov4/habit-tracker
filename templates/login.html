@@ -66,19 +66,19 @@
                     </div>
                 </div>
 
-                <div class="form-actions" style="margin-top: 30px;">
+                <div class="form-actions" style="margin-top: 16px;">
                     <button type="submit" class="action-btn primary" style="width: 100%;">
                         <i class="fas fa-sign-in-alt"></i> Войти
                     </button>
                 </div>
 
-                <div style="margin: 20px 0; text-align: center; position: relative;">
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 0;">
-                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; color: #999; font-size: 0.85rem;">или</span>
+                <div style="margin: 12px 0; text-align: center; position: relative;">
+                    <hr style="border: none; border-top: 1px solid rgba(128,128,128,0.25); margin: 0;">
+                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--card-bg, white); padding: 0 10px; color: #999; font-size: 0.85rem;">или</span>
                 </div>
 
                 <div class="form-actions" style="margin-top: 0;">
-                    <a href="{{ url_for('google_login') }}" class="action-btn" style="width: 100%; background: white; color: #444; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <a href="{{ url_for('google_login') }}" class="google-btn action-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;">
                         <i class="fab fa-google" style="color: #DB4437; font-size: 18px;"></i>
                         Войти через Google
                     </a>
@@ -86,7 +86,7 @@
             </form>
 
             <!-- Ссылка на регистрацию -->
-            <p style="text-align: center; margin-top: 25px; color: #666;">
+            <p style="text-align: center; margin-top: 14px; color: #666;">
                 Нет аккаунта?
                 <a href="{{ url_for('register') }}" style="color: #667eea; font-weight: 500;">
                     Зарегистрироваться

@@ -950,6 +950,22 @@ def change_password():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+@app.route('/api/clear_data', methods=['POST'])
+@login_required
+def api_clear_data():
+    try:
+        # Очищаем текущие данные пользователя
+        HabitLog.query.filter_by(user_id=current_user.id).delete()
+        MissedHabit.query.filter_by(user_id=current_user.id).delete()
+        HabitNote.query.filter_by(user_id=current_user.id).delete()
+        Habit.query.filter_by(user_id=current_user.id).delete()
+        HabitList.query.filter_by(user_id=current_user.id).delete()
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/api/import_data', methods=['POST'])
 @login_required
 def api_import_data():

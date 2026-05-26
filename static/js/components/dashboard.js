@@ -28,12 +28,12 @@ export class DashboardManager {
 
         if (todayHabits.length === 0) {
             grid.innerHTML = `
-                <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                <div class="empty-state" style="grid-column: 1/-1;">
                     <div style="font-size: 4rem; margin-bottom: 20px; opacity: 0.2;">🎯</div>
-                    <h3 style="color: #1e293b; margin-bottom: 10px;">
+                    <h3>
                         ${this.parent.activeFilter === 'all' ? 'На сегодня привычек нет' : 'В этом фильтре нет привычек'}
                     </h3>
-                    <p style="color: #64748b;">
+                    <p>
                         ${this.parent.activeFilter === 'all' ? 'Добавьте привычки, чтобы начать отслеживать прогресс!' : 'Попробуйте сменить фильтр или добавить привычки.'}
                     </p>
                 </div>

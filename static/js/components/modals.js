@@ -324,7 +324,7 @@ export class ModalManager {
                                 <div class="note-item" id="note-item-${n.id}" style="border-left-color: ${habitColor}">
                                     <div class="note-item-header">
                                         <span class="note-time">${time}</span>
-                                        <div class="note-actions">
+                                        <div class="note-actions" id="note-actions-${n.id}">
                                             <button onclick="habitTracker.modalManager.enterEditMode(${n.id}, \`${safeText}\` )" 
                                                     class="note-edit-btn">
                                                 <i class="fas fa-pencil-alt"></i>
