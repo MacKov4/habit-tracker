@@ -90,12 +90,15 @@ export class CalendarManager {
         }
     }
 
-    openDayDetailsModal(dateISO) {
+    async openDayDetailsModal(dateISO) {
         const modal = document.getElementById('dayDetailsModal');
         const body = document.getElementById('dayDetailsBody');
         const title = document.getElementById('dayDetailsTitle');
         const subtitle = document.getElementById('dayDetailsSubtitle');
+        const summaryEl = document.getElementById('dayDetailsSummary');
         if (!modal || !body) return;
+
+        this._openDateISO = dateISO;
 
         const parts = dateISO.split('-');
         const date = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -110,10 +113,17 @@ export class CalendarManager {
             weekday: 'long'
         }).format(date);
 
+        if (summaryEl) {
+            summaryEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка сводки дня...';
+        }
+
         body.innerHTML = '';
 
         if (habits.length === 0) {
             body.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">На этот день не было запланировано привычек.</div>';
+            if (summaryEl) {
+                summaryEl.innerHTML = 'В этот день не было запланировано привычек.';
+            }
         } else {
             habits.forEach(habit => {
                 const isCompleted = this.parent.completions[dateDisplay] && this.parent.completions[dateDisplay][String(habit.id)];
@@ -138,25 +148,128 @@ export class CalendarManager {
 
                 const habitEl = document.createElement('div');
                 habitEl.className = 'day-habit-item';
+                habitEl.style.marginBottom = '6px';
+                habitEl.style.paddingBottom = '10px';
                 habitEl.innerHTML = `
-                    <div class="day-habit-main">
+                    <div class="day-habit-main" style="width: 100%;">
                         <div class="day-habit-icon ${statusClass}">
                             <i class="fas ${icon}"></i>
                         </div>
-                        <div class="day-habit-info">
+                        <div class="day-habit-info" style="width: 100%;">
                             <div class="day-habit-name">${habit.name}</div>
                             <div class="day-habit-status-row">
                                 <span class="day-habit-status-text ${statusClass}">${status}</span>
                                 ${time ? `<span class="day-habit-time">${time}</span>` : ''}
                             </div>
+                            <div class="day-habit-notes-container" id="day-habit-notes-container-${habit.id}"></div>
                         </div>
                     </div>
-                    <button class="day-habit-notes-btn" onclick="habitTracker.openViewNotesModal('${habit.id}')">
-                        <i class="fas fa-sticky-note"></i> Заметки
-                    </button>
                 `;
                 body.appendChild(habitEl);
             });
+
+            modal.classList.add('show');
+
+            const moodEmojis = {
+                'excellent': '😍',
+                'good': '😊',
+                'neutral': '😐',
+                'bad': '☹️',
+                'terrible': '😡'
+            };
+            const moodLabels = {
+                'excellent': 'Отлично',
+                'good': 'Хорошо',
+                'neutral': 'Нормально',
+                'bad': 'Плохо',
+                'terrible': 'Ужасно'
+            };
+
+            try {
+                const notesPromises = habits.map(habit => this.parent.API.getNotes(habit.id).catch(() => []));
+                const allNotesArrays = await Promise.all(notesPromises);
+                
+                const dayNotes = [];
+                allNotesArrays.forEach((notesList, idx) => {
+                    const habit = habits[idx];
+                    notesList.forEach(note => {
+                        if (note.date === dateISO) {
+                            dayNotes.push({
+                                ...note,
+                                habitId: habit.id,
+                                habitName: habit.name
+                            });
+                        }
+                    });
+                });
+
+                const moodScores = {
+                    'excellent': 5,
+                    'good': 4,
+                    'neutral': 3,
+                    'bad': 2,
+                    'terrible': 1
+                };
+                const scoreToMoodStr = {
+                    5: 'Отличным 😍',
+                    4: 'Хорошим 😊',
+                    3: 'Нормальным 😐',
+                    2: 'Плохим ☹️',
+                    1: 'Ужасным 😡'
+                };
+
+                const moodsWithScores = dayNotes
+                    .filter(n => n.mood && moodScores[n.mood] !== undefined)
+                    .map(n => moodScores[n.mood]);
+
+                let moodHtml = "";
+                if (moodsWithScores.length > 0) {
+                    const avgScore = Math.round(moodsWithScores.reduce((a, b) => a + b, 0) / moodsWithScores.length);
+                    const moodText = scoreToMoodStr[avgScore] || "не указано";
+                    moodHtml = `<br>Ваше настроение было <strong>${moodText}</strong>.`;
+                }
+
+                const completedHabits = habits.filter(habit =>
+                    this.parent.completions[dateDisplay] && this.parent.completions[dateDisplay][String(habit.id)]
+                ).length;
+
+                if (summaryEl) {
+                    summaryEl.innerHTML = `В этот день вы выполнили <strong>${completedHabits}/${habits.length}</strong> привычек.${moodHtml}`;
+                }
+
+                habits.forEach(habit => {
+                    const habitNotesForDay = dayNotes.filter(n => String(n.habitId) === String(habit.id));
+                    const notesContainer = document.getElementById(`day-habit-notes-container-${habit.id}`);
+                    if (notesContainer && habitNotesForDay.length > 0) {
+                        notesContainer.innerHTML = habitNotesForDay.map(n => {
+                            const noteTime = n.created_at.split(' ')[1]?.substring(0, 5) || '';
+                            const moodEmoji = n.mood ? moodEmojis[n.mood] : null;
+                            const moodLabel = n.mood ? moodLabels[n.mood] : '';
+                            const safeText = n.text.replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/"/g, '&quot;');
+
+                            return `
+                                <div class="day-note-card" id="note-item-${n.id}" style="margin-top: 6px; padding: 8px 12px; background: var(--card-bg, #f8fafc); border: 1px solid var(--border-color, #edf2f7); border-radius: 10px; font-size: 0.88rem; color: var(--text-main); text-align: left;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="font-size: 0.78rem; color: var(--text-muted, #94a3b8);"><i class="fas fa-clock" style="margin-right: 4px;"></i>${noteTime}</span>
+                                        <div class="note-actions" id="note-actions-${n.id}" style="display: flex; gap: 6px;">
+                                            <button onclick="habitTracker.modalManager.enterEditMode(${n.id}, \`${safeText}\`)" class="note-edit-btn" style="background: none; border: none; cursor: pointer; color: var(--text-muted, #94a3b8); font-size: 0.82rem; padding: 2px 4px;" title="Редактировать"><i class="fas fa-pencil-alt"></i></button>
+                                            <button onclick="habitTracker.modalManager.deleteNoteConfirm(${n.id})" class="note-delete-btn" style="background: none; border: none; cursor: pointer; color: var(--text-muted, #94a3b8); font-size: 0.82rem; padding: 2px 4px;" title="Удалить"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="note-body" id="note-text-${n.id}" style="line-height: 1.4; text-align: left;">${n.text}</div>
+                                    ${moodEmoji ? `<div style="margin-top: 4px; font-size: 0.82rem; color: var(--text-muted, #64748b); text-align: left;"><span style="font-size: 1rem;">${moodEmoji}</span> ${moodLabel}</div>` : ''}
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                });
+
+            } catch (err) {
+                console.error("Ошибка загрузки сводки:", err);
+                if (summaryEl) {
+                    summaryEl.innerHTML = `Ошибка при загрузке деталей заметок.`;
+                }
+            }
         }
 
         modal.classList.add('show');

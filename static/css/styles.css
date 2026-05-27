@@ -5462,3 +5462,49 @@ button,
 .dark-mode .habits-list {
     background: transparent !important;
 }
+
+/* Habit menu dark mode overrides */
+.dark-mode .habit-menu__item {
+    color: var(--text-main) !important;
+}
+
+.dark-mode .habit-menu__item:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark-mode .habit-menu__divider {
+    background-color: var(--border-color) !important;
+}
+
+/* Calendar Info Banner */
+.calendar-info-banner {
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: rgba(102, 126, 234, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.12);
+    border-radius: 16px;
+    font-size: 0.92rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.5;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+}
+
+.calendar-info-banner i {
+    color: #667eea;
+    font-size: 1.25rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.dark-mode .calendar-info-banner {
+    background: rgba(129, 140, 248, 0.08) !important;
+    border-color: rgba(129, 140, 248, 0.15) !important;
+}
+
+.dark-mode .calendar-info-banner i {
+    color: #818cf8 !important;
+}

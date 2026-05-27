@@ -324,12 +324,7 @@
                         </div>
 
 
-                        <div class="settings-block">
-                            <div class="settings-row row-danger" id="clearDataBtnTick">
-                                <div class="row-label">Управление данными</div>
-                                <div class="row-action action-danger">Очистить все записи</div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- Секция Внешний вид -->
@@ -839,11 +834,17 @@
     <!-- Модалка деталей дня из календаря -->
     <div id="dayDetailsModal" class="modal">
         <div class="smart-modal" style="max-width: 550px;">
-            <div class="modal-header">
-                <h2 id="dayDetailsTitle">Детали дня</h2>
-                <p id="dayDetailsSubtitle" style="color: #64748b; font-size: 0.9rem; margin-top: 4px;"></p>
+            <div class="modal-header" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; border-bottom: 1px solid var(--border-color, #eee); padding: 24px 28px 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                    <div>
+                        <h2 id="dayDetailsTitle" style="margin: 0; font-size: 1.8rem; font-weight: 600;">Детали дня</h2>
+                        <p id="dayDetailsSubtitle" style="color: #64748b; font-size: 0.9rem; margin-top: 4px;"></p>
+                    </div>
+                    <button class="close-btn" onclick="habitTracker.closeDayDetailsModal()" style="font-size: 1.8rem; line-height: 1;">×</button>
+                </div>
+                <div id="dayDetailsSummary" style="padding: 12px 16px; background: rgba(102, 126, 234, 0.06); border: 1px solid rgba(102, 126, 234, 0.12); border-radius: 12px; font-size: 0.95rem; line-height: 1.45; color: var(--text-main); font-weight: 500; text-align: left;"></div>
             </div>
-            <div class="modal-body" id="dayDetailsBody" style="padding-top: 20px;">
+            <div class="modal-body" id="dayDetailsBody" style="padding-top: 10px;">
                 <!-- Список привычек будет здесь -->
             </div>
             <div class="modal-footer">

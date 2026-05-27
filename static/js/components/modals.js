@@ -387,9 +387,19 @@ export class ModalManager {
     }
 
     exitEditMode(noteId) {
+        if (this._refreshDayDetailsIfOpen()) return;
         if (this.parent._viewNotesHabitId) {
             this.renderNotes(this.parent._viewNotesHabitId);
         }
+    }
+
+    _refreshDayDetailsIfOpen() {
+        const dayModal = document.getElementById('dayDetailsModal');
+        if (dayModal && dayModal.classList.contains('show') && this.parent.calendarManager?._openDateISO) {
+            this.parent.calendarManager.openDayDetailsModal(this.parent.calendarManager._openDateISO);
+            return true;
+        }
+        return false;
     }
 
     deleteNoteConfirm(noteId) {
@@ -528,8 +538,10 @@ export class ModalManager {
             const result = await this.parent.API.editNote(noteId, text);
             if (result.success) {
                 this.parent.showToast('Заметка обновлена!');
-                if (this.parent._viewNotesHabitId) {
-                    this.renderNotes(this.parent._viewNotesHabitId);
+                if (!this._refreshDayDetailsIfOpen()) {
+                    if (this.parent._viewNotesHabitId) {
+                        this.renderNotes(this.parent._viewNotesHabitId);
+                    }
                 }
             } else {
                 this.parent.showToast('Ошибка при обновлении', true);
@@ -547,8 +559,10 @@ export class ModalManager {
                 this.parent.showToast('Заметка удалена');
                 const modal = document.getElementById('deleteNoteConfirmModal');
                 if (modal) modal.classList.remove('show');
-                if (this.parent._viewNotesHabitId) {
-                    this.renderNotes(this.parent._viewNotesHabitId);
+                if (!this._refreshDayDetailsIfOpen()) {
+                    if (this.parent._viewNotesHabitId) {
+                        this.renderNotes(this.parent._viewNotesHabitId);
+                    }
                 }
             } else {
                 this.parent.showToast('Ошибка при удалении', true);
