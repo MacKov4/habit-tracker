@@ -181,8 +181,8 @@ login_manager.login_message = None
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(150), unique=True, nullable=False)
+    username = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     theme_color = db.Column(db.String(50), default='#667eea')
     
@@ -276,6 +276,13 @@ class VerificationCode(db.Model):
 # Автоматически создаем таблицы в базе данных при запуске приложения
 with app.app_context():
     db.create_all()
+    # Миграция: увеличиваем длину колонок в PostgreSQL, так как зашифрованные данные длиннее лимитов
+    try:
+        db.session.execute(db.text('ALTER TABLE "user" ALTER COLUMN username TYPE VARCHAR(255)'))
+        db.session.execute(db.text('ALTER TABLE "user" ALTER COLUMN email TYPE VARCHAR(255)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
 
 # =====================
 # РОУТЫ
