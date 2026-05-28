@@ -160,7 +160,18 @@
                 }
             }, 500);
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Скрытие всех тостов через 3 секунды
+            setTimeout(() => {
+                document.querySelectorAll('.toast').forEach(toast => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 400);
+                });
+            }, 3000);
+        });
     </script>
 </body>
-
 </html>

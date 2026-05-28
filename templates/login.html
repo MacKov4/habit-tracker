@@ -98,7 +98,32 @@
 
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = passwordInput ? passwordInput.nextElementSibling : null;
+            if (passwordInput && icon) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            }
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            // Скрытие всех тостов через 3 секунды
+            setTimeout(() => {
+                document.querySelectorAll('.toast').forEach(toast => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 400);
+                });
+            }, 3000);
+        });
+    </script>
+</body>
 </html>

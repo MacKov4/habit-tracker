@@ -119,7 +119,7 @@ def send_email(to_email, subject, body):
                     "Content-Type": "application/json"
                 },
                 json={
-                    "from": "Habit Tracker <onboarding@resend.dev>",
+                    "from": "Трекер Привычек <onboarding@resend.dev>",
                     "to": [to_email],
                     "subject": subject,
                     "text": body
