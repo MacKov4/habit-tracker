@@ -67,10 +67,24 @@ app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 app.logger.info('Habit Tracker startup')
 app.config['SECRET_KEY'] = 'supersecretkey'  # лучше хранить в .env или переменных окружения
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+# Настройка подключения к базе данных (PostgreSQL на Render / SQLite локально)
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    # SQLAlchemy 1.4+ требует, чтобы ссылка начиналась с postgresql:// вместо postgres://
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # убирает предупреждение
 
 db = SQLAlchemy(app)
+
+# Автоматически создаем таблицы в базе данных при запуске приложения
+with app.app_context():
+    db.create_all()
 
 oauth = OAuth(app)
 google = oauth.register(
@@ -1044,7 +1058,4 @@ def update_settings():
     return jsonify({"success": True})
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-
     app.run(host="0.0.0.0", port=5000, debug=True)
