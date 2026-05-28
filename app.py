@@ -104,6 +104,51 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', os.getenv('MAIL_USERNAME'))
 
 mail = Mail(app)
+
+import requests
+
+def send_email(to_email, subject, body):
+    resend_api_key = os.getenv("RESEND_API_KEY")
+    if resend_api_key:
+        try:
+            # Отправка через Resend HTTP API
+            response = requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "from": "Habit Tracker <onboarding@resend.dev>",
+                    "to": [to_email],
+                    "subject": subject,
+                    "text": body
+                }
+            )
+            if response.status_code in [200, 201]:
+                app.logger.info(f"Email successfully sent to {to_email} via Resend")
+                return True
+            else:
+                app.logger.error(f"Resend API error: {response.status_code} - {response.text}")
+                raise Exception(f"Resend status code {response.status_code}")
+        except Exception as e:
+            app.logger.error(f"Failed to send email via Resend: {e}")
+            if os.getenv("MAIL_USERNAME"):
+                msg = Message(subject, recipients=[to_email])
+                msg.body = body
+                mail.send(msg)
+                return True
+            raise e
+    else:
+        if os.getenv("MAIL_USERNAME"):
+            msg = Message(subject, recipients=[to_email])
+            msg.body = body
+            mail.send(msg)
+            return True
+        else:
+            print(f"\n[EMAIL SIMULATION] To: {to_email}\nSubject: {subject}\nBody: {body}\n")
+            app.logger.info(f"Email simulation output printed to console for {to_email}")
+            return True
 # Словари для перевода и оформления (категория: (Иконка + Название, Цвет))
 HABIT_CONFIG = {
     'health': ('🏃 Здоровье', '#ff6b6b'),
@@ -811,10 +856,11 @@ def forgot_password():
             
             # Отправляем письмо
             try:
-                msg = Message("Код восстановления пароля",
-                            recipients=[email])
-                msg.body = f"Ваш код для сброса пароля: {code}. Код действует 10 минут."
-                mail.send(msg)
+                send_email(
+                    to_email=email,
+                    subject="Код восстановления пароля",
+                    body=f"Ваш код для сброса пароля: {code}. Код действует 10 минут."
+                )
                 flash("Код отправлен на вашу почту", "success")
             except Exception as e:
                 print(f"Ошибка отправки почты: {e}")
@@ -934,9 +980,11 @@ def api_send_reminder_email():
     email = decrypt_data(current_user.email)
     
     try:
-        msg = Message("Напоминание о привычках", recipients=[email])
-        msg.body = f"Привет! Напоминаем, что у вас осталось {count} невыполненных привычек на сегодня. Не забывайте отмечать свой прогресс!"
-        mail.send(msg)
+        send_email(
+            to_email=email,
+            subject="Напоминание о привычках",
+            body=f"Привет! Напоминаем, что у вас осталось {count} невыполненных привычек на сегодня. Не забывайте отмечать свой прогресс!"
+        )
         return jsonify({"success": True})
     except Exception as e:
         print(f"Ошибка отправки напоминания: {e}")
