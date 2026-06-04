@@ -254,7 +254,7 @@ class HabitNote(db.Model):
     text = db.Column(db.Text, nullable=False)
     mood = db.Column(db.String(20), nullable=True) # excellent, good, neutral, bad, terrible
     date = db.Column(db.String(10), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.now())
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
 class HabitList(db.Model):
     """Пользовательские списки привычек"""
@@ -425,19 +425,25 @@ def api_get_habit(habit_id):
 @app.route("/api/insights", methods=["GET"])
 @login_required
 def api_get_insights():
+    from collections import defaultdict
     insights = []
-    
-    # Инсайт 1: Время выполнения (Жаворонок/Сова)
-    logs_with_time = HabitLog.query.filter(
-        HabitLog.user_id == current_user.id, 
-        HabitLog.action_time != None,
-        HabitLog.completed == True
-    ).all()
-    
+
+    all_logs = HabitLog.query.filter_by(user_id=current_user.id).all()
+    all_habits = Habit.query.filter_by(user_id=current_user.id).all()
+    notes = HabitNote.query.filter_by(user_id=current_user.id).all()
+
+    logs_by_date = defaultdict(list)
+    logs_by_habit = defaultdict(list)
+    for log in all_logs:
+        logs_by_date[log.date].append(log)
+        logs_by_habit[log.habit_id].append(log)
+
+    # --- Инсайт 1: Жаворонок / Сова ---
+    logs_with_time = [l for l in all_logs if l.action_time and l.completed]
     if logs_with_time:
-        morning_count = sum(1 for log in logs_with_time if int(log.action_time.split(':')[0]) < 12)
+        morning_count = sum(1 for l in logs_with_time if int(l.action_time.split(':')[0]) < 12)
         total_timed = len(logs_with_time)
-        if total_timed > 3:
+        if total_timed >= 2:
             morning_ratio = morning_count / total_timed
             if morning_ratio > 0.6:
                 insights.append({
@@ -445,47 +451,68 @@ def api_get_insights():
                     "title": "Вы — жаворонок!",
                     "text": f"{int(morning_ratio*100)}% своих привычек вы выполняете до полудня. Отличное время для самых важных задач!"
                 })
-            elif morning_ratio < 0.3:
+            elif morning_ratio < 0.35:
                 insights.append({
                     "icon": "🌙",
                     "title": "Ночная продуктивность",
-                    "text": f"{int((1-morning_ratio)*100)}% привычек вы делаете после обеда и вечером."
+                    "text": f"{int((1 - morning_ratio)*100)}% привычек вы выполняете после обеда и вечером. Вы — сова!"
                 })
 
-    # Инсайт 2: Зависимость от настроения
-    notes = HabitNote.query.filter_by(user_id=current_user.id).all()
-    if len(notes) > 3:
-        mood_completions = {'good': [], 'bad': []}
-        all_logs = HabitLog.query.filter_by(user_id=current_user.id).all()
-        logs_by_date = {}
-        for l in all_logs:
-            if l.date not in logs_by_date:
-                logs_by_date[l.date] = []
-            logs_by_date[l.date].append(l.completed)
-            
+    # --- Инсайт 2: Настроение решает ---
+    if notes:
+        mood_completions = defaultdict(list)
         for n in notes:
-            if n.date in logs_by_date:
-                daily_completion = sum(1 for completed in logs_by_date[n.date] if completed) / len(logs_by_date[n.date]) if logs_by_date[n.date] else 0
-                if n.mood in ['excellent', 'good']:
-                    mood_completions['good'].append(daily_completion)
-                elif n.mood in ['bad', 'terrible']:
-                    mood_completions['bad'].append(daily_completion)
-                    
+            day_logs = logs_by_date.get(n.date, [])
+            if not day_logs or not n.mood:
+                continue
+            rate = sum(1 for l in day_logs if l.completed) / len(day_logs)
+            if n.mood in ('excellent', 'good'):
+                mood_completions['good'].append(rate)
+            elif n.mood in ('bad', 'terrible'):
+                mood_completions['bad'].append(rate)
+
         if mood_completions['good'] and mood_completions['bad']:
             avg_good = sum(mood_completions['good']) / len(mood_completions['good'])
-            avg_bad = sum(mood_completions['bad']) / len(mood_completions['bad'])
-            if avg_good > avg_bad + 0.2:
+            avg_bad  = sum(mood_completions['bad'])  / len(mood_completions['bad'])
+            diff = avg_good - avg_bad
+            if diff > 0.1:
                 insights.append({
                     "icon": "😊",
                     "title": "Настроение решает",
-                    "text": f"В дни с хорошим настроением вы выполняете на {int((avg_good - avg_bad)*100)}% больше задач. Радуйте себя чаще!"
+                    "text": f"В дни с хорошим настроением вы выполняете на {int(diff * 100)}% больше привычек. Позаботьтесь о своём состоянии!"
                 })
-                
+            elif diff < -0.1:
+                insights.append({
+                    "icon": "💪",
+                    "title": "Сила воли впечатляет",
+                    "text": "Вы выполняете привычки даже в плохие дни. Это настоящая дисциплина!"
+                })
+
+    # --- Инсайт 3: Сильнейшая привычка ---
+    if all_habits and all_logs:
+        best_habit = None
+        best_rate = 0
+        for habit in all_habits:
+            h_logs = logs_by_habit.get(habit.id, [])
+            if len(h_logs) >= 2:
+                rate = sum(1 for l in h_logs if l.completed) / len(h_logs)
+                if rate > best_rate:
+                    best_rate = rate
+                    best_habit = habit
+        if best_habit and best_rate >= 0.5:
+            name = decrypt_data(best_habit.name)
+            insights.append({
+                "icon": "🏆",
+                "title": "Ваша сильнейшая привычка",
+                "text": f"«{name}» — выполняется в {int(best_rate * 100)}% случаев. Продолжайте в том же духе!"
+            })
+
+    # --- Фолбэк ---
     if not insights:
         insights.append({
             "icon": "📊",
             "title": "Сбор данных",
-            "text": "Продолжайте отмечать привычки и настроение, и скоро здесь появятся персональные инсайты."
+            "text": "Продолжайте отмечать привычки и добавляйте заметки с настроением — инсайты появятся здесь."
         })
 
     return jsonify(insights)

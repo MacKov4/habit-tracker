@@ -514,6 +514,10 @@ export class ModalManager {
                 modal.classList.remove('show');
                 this.parent.showToast('Заметка сохранена!');
                 this.selectedMood = null;
+                // Обновляем инсайты сразу после добавления заметки
+                if (typeof this.parent.loadInsights === 'function') {
+                    this.parent.loadInsights();
+                }
             } else {
                 this.parent.showToast('Ошибка сохранения заметки', true);
             }

@@ -122,9 +122,12 @@ export class CalendarManager {
         if (habits.length === 0) {
             body.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">На этот день не было запланировано привычек.</div>';
             if (summaryEl) {
-                summaryEl.innerHTML = 'В этот день не было запланировано привычек.';
+                summaryEl.style.display = 'none';
             }
         } else {
+            if (summaryEl) {
+                summaryEl.style.display = 'block';
+            }
             habits.forEach(habit => {
                 const isCompleted = this.parent.completions[dateDisplay] && this.parent.completions[dateDisplay][String(habit.id)];
                 const isSkipped = this.parent.skipped[dateISO] && this.parent.skipped[dateISO][String(habit.id)];

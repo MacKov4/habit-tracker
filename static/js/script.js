@@ -152,7 +152,17 @@ class HabitTracker {
         const rawDay = date.getDay();
         const dayOfWeek = (rawDay === 0) ? 6 : rawDay - 1;
 
+        const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
         return this.habits.filter(habit => {
+            if (habit.createdAt) {
+                const createdDate = new Date(habit.createdAt);
+                const createdDateNormalized = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+                if (checkDate < createdDateNormalized) {
+                    return false;
+                }
+            }
+
             if (habit.frequency === 'daily') return true;
             if (habit.frequency === 'weekly') return dayOfWeek === 0;
 
@@ -1381,6 +1391,18 @@ class HabitTracker {
                 if (this.completions[dateStr] && this.completions[dateStr][habitId]) {
                     streak++;
                 } else {
+                    const y = checkDate.getFullYear();
+                    const m = String(checkDate.getMonth() + 1).padStart(2, '0');
+                    const d = String(checkDate.getDate()).padStart(2, '0');
+                    const isoDate = `${y}-${m}-${d}`;
+                    
+                    const isSkipped = (this.skipped[dateStr] && this.skipped[dateStr][habitId]) || 
+                                      (this.skipped[isoDate] && this.skipped[isoDate][habitId]);
+                    
+                    if (isSkipped) {
+                        continue;
+                    }
+
                     // Если сегодня (i=0) и привычка ещё не выполнена, стрик не прерывается.
                     // Мы просто продолжаем проверку со вчерашнего дня.
                     if (i === 0) continue;
@@ -1438,6 +1460,18 @@ class HabitTracker {
                         currentStreak++;
                         maxStreakForHabit = Math.max(maxStreakForHabit, currentStreak);
                     } else {
+                        const y = checkDate.getFullYear();
+                        const m = String(checkDate.getMonth() + 1).padStart(2, '0');
+                        const d = String(checkDate.getDate()).padStart(2, '0');
+                        const isoDate = `${y}-${m}-${d}`;
+                        
+                        const isSkipped = (this.skipped[dateStr] && this.skipped[dateStr][String(habit.id)]) || 
+                                          (this.skipped[isoDate] && this.skipped[isoDate][String(habit.id)]);
+                        
+                        if (isSkipped) {
+                            continue;
+                        }
+
                         if (i === 0) continue; // Не обнуляем из-за невыполнения сегодня
                         currentStreak = 0;
                     }
