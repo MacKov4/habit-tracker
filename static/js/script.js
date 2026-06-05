@@ -550,34 +550,13 @@ class HabitTracker {
     }
 
     async updateNotificationSetting(key, value) {
-        // Если включаются уведомления, запрашиваем разрешение у браузера
-        if (value === true && (key === 'daily_reminders' || key === 'internet_reminders')) {
-            if ("Notification" in window) {
-                const permission = await Notification.requestPermission();
-                if (permission !== "granted") {
-                    this.showToast('Для работы уведомлений нужно разрешение браузера', true);
-                    // Визуально выключаем переключатель, если отказано
-                    const toggle = document.getElementById(key === 'daily_reminders' ? 'dailyRemindersToggle' : 'internetRemindersToggle');
-                    if (toggle) toggle.checked = false;
-                    return;
-                } else {
-                    this.showToast('Уведомления успешно включены! 🔔');
-                    // Тестовое уведомление
-                    this.sendBrowserNotification('Трекер Привычек', 'Вы успешно включили уведомления!');
-                }
-            } else {
-                this.showToast('Ваш браузер не поддерживает уведомления', true);
-                return;
-            }
-        }
-
         try {
             const result = await this.API.updateSettings({ [key]: value });
             if (result.success) {
                 this.showToast('Настройки обновлены');
                 
                 // Перезагружаем настройки (если изменилось время или тип)
-                if (key === 'daily_reminders' || key === 'reminder_time' || key === 'internet_reminders') {
+                if (key === 'reminder_time' || key === 'email_notifications') {
                     this.initNotifications();
                 }
             } else {
@@ -605,23 +584,19 @@ class HabitTracker {
     }
 
     async checkReminders() {
-        if (!("Notification" in window) || Notification.permission !== "granted") return;
-
-        const dailyToggle = document.getElementById('dailyRemindersToggle');
         const timeInput = document.getElementById('reminderTimeInput');
-        const internetToggle = document.getElementById('internetRemindersToggle');
+        const emailToggle = document.getElementById('emailNotificationsToggle');
 
-        if (!dailyToggle || !timeInput) return;
+        if (!timeInput || !emailToggle) return;
 
-        const isDailyEnabled = dailyToggle.checked;
         const reminderTime = timeInput.value; // "HH:MM"
-        const isInternetEnabled = internetToggle ? internetToggle.checked : false;
+        const isEmailEnabled = emailToggle.checked;
 
         const now = new Date();
         const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-        // 1. Ежедневное напоминание
-        if (isDailyEnabled && currentTime === reminderTime) {
+        // Ежедневное напоминание
+        if (currentTime === reminderTime) {
             const lastSent = localStorage.getItem('lastDailyReminderSent');
             const today = formatDate(now);
             
@@ -630,33 +605,12 @@ class HabitTracker {
                 const uncompletedCount = todayHabits.filter(h => !this.isHabitCompletedToday(h.id)).length;
                 
                 if (uncompletedCount > 0) {
-                    this.sendBrowserNotification('Пора заняться привычками!', `У вас осталось ${uncompletedCount} невыполненных задач на сегодня.`);
-                    
                     // Отправка EMAIL если включено
-                    const emailToggle = document.getElementById('emailNotificationsToggle');
-                    if (emailToggle && emailToggle.checked) {
+                    if (isEmailEnabled) {
                         this.API.sendReminderEmail(uncompletedCount).catch(err => console.error('Email error:', err));
                     }
 
                     localStorage.setItem('lastDailyReminderSent', today);
-                }
-            }
-        }
-
-        // 2. Интернет-напоминание
-        if (isInternetEnabled) {
-            const lastInternetSent = localStorage.getItem('lastInternetReminderSent');
-            const nowTs = Date.now();
-            const threeHours = 3 * 60 * 60 * 1000;
-
-            if (!lastInternetSent || (nowTs - parseInt(lastInternetSent)) > threeHours) {
-                const todayHabits = this.getTodayHabits();
-                const uncompleted = todayHabits.filter(h => !this.isHabitCompletedToday(h.id));
-                
-                if (uncompleted.length > 0) {
-                    const randomHabit = uncompleted[Math.floor(Math.random() * uncompleted.length)];
-                    this.sendBrowserNotification('Не забудьте!', `Как насчет того, чтобы выполнить: ${randomHabit.name}?`);
-                    localStorage.setItem('lastInternetReminderSent', nowTs.toString());
                 }
             }
         }
