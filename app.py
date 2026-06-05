@@ -107,10 +107,20 @@ mail = Mail(app)
 
 import requests
 
-def send_email(to_email, subject, body):
+def send_email(to_email, subject, body, html_body=None):
     resend_api_key = os.getenv("RESEND_API_KEY")
     if resend_api_key:
         try:
+            payload = {
+                "from": "Трекер Привычек <onboarding@resend.dev>",
+                "to": [to_email],
+                "subject": subject
+            }
+            if html_body:
+                payload["html"] = html_body
+            else:
+                payload["text"] = body
+
             # Отправка через Resend HTTP API
             response = requests.post(
                 "https://api.resend.com/emails",
@@ -118,12 +128,7 @@ def send_email(to_email, subject, body):
                     "Authorization": f"Bearer {resend_api_key}",
                     "Content-Type": "application/json"
                 },
-                json={
-                    "from": "Трекер Привычек <onboarding@resend.dev>",
-                    "to": [to_email],
-                    "subject": subject,
-                    "text": body
-                }
+                json=payload
             )
             if response.status_code in [200, 201]:
                 app.logger.info(f"Email successfully sent to {to_email} via Resend")
@@ -136,6 +141,8 @@ def send_email(to_email, subject, body):
             if os.getenv("MAIL_USERNAME"):
                 msg = Message(subject, recipients=[to_email])
                 msg.body = body
+                if html_body:
+                    msg.html = html_body
                 mail.send(msg)
                 return True
             raise e
@@ -1014,10 +1021,34 @@ def api_send_reminder_email():
     email = decrypt_data(current_user.email)
     
     try:
+        html_content = f"""
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; background-color: #f8f9fa; border: 1px solid #e9ecef;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h1 style="color: #667eea; margin: 0;">Трекер Привычек</h1>
+            </div>
+            <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h2 style="color: #2d3748; margin-top: 0;">Привет! 👋</h2>
+                <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+                    Напоминаем, что у вас осталось <strong>{count} невыполненных привычек</strong> на сегодня.
+                </p>
+                <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+                    Не забывайте отмечать свой прогресс! Каждый маленький шаг приближает вас к большой цели.
+                </p>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="http://127.0.0.1:5000" style="background-color: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Отметить привычки</a>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 12px;">
+                <p>Вы получили это письмо, потому что включили уведомления в настройках профиля.</p>
+            </div>
+        </div>
+        """
+        
         send_email(
             to_email=email,
-            subject="Напоминание о привычках",
-            body=f"Привет! Напоминаем, что у вас осталось {count} невыполненных привычек на сегодня. Не забывайте отмечать свой прогресс!"
+            subject="🌟 Напоминание о привычках на сегодня",
+            body=f"Привет! Напоминаем, что у вас осталось {count} невыполненных привычек на сегодня. Не забывайте отмечать свой прогресс!",
+            html_body=html_content
         )
         return jsonify({"success": True})
     except Exception as e:
