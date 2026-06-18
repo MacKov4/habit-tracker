@@ -550,13 +550,38 @@ class HabitTracker {
     }
 
     async updateNotificationSetting(key, value) {
+        // Если включаются уведомления, запрашиваем разрешение у браузера только для интернет-напоминаний
+        if (value === true && key === 'internet_reminders') {
+            if ("Notification" in window) {
+                const permission = await Notification.requestPermission();
+                if (permission !== "granted") {
+                    this.showToast('Для работы уведомлений нужно разрешение браузера', true);
+                    // Визуально выключаем переключатель, если отказано
+                    const toggle = document.getElementById('internetRemindersToggle');
+                    if (toggle) toggle.checked = false;
+                    return;
+                } else {
+                    this.showToast('Уведомления успешно включены! 🔔');
+                    // Тестовое уведомление
+                    this.sendBrowserNotification('Трекер Привычек', 'Вы успешно включили уведомления!');
+                }
+            } else {
+                this.showToast('Ваш браузер не поддерживает уведомления', true);
+                return;
+            }
+        }
+
         try {
             const result = await this.API.updateSettings({ [key]: value });
             if (result.success) {
                 this.showToast('Настройки обновлены');
                 
                 // Перезагружаем настройки (если изменилось время или тип)
-                if (key === 'reminder_time' || key === 'email_notifications') {
+                if (key === 'daily_reminders' || key === 'reminder_time' || key === 'internet_reminders' || key === 'email_notifications') {
+                    if (key === 'reminder_time' || key === 'email_notifications') {
+                        // Сбрасываем флаг последней отправки, чтобы можно было протестировать новое время/настройку
+                        localStorage.removeItem('lastDailyReminderSent');
+                    }
                     this.initNotifications();
                 }
             } else {
@@ -584,19 +609,24 @@ class HabitTracker {
     }
 
     async checkReminders() {
+        const dailyToggle = document.getElementById('dailyRemindersToggle');
         const timeInput = document.getElementById('reminderTimeInput');
-        const emailToggle = document.getElementById('emailNotificationsToggle');
+        const internetToggle = document.getElementById('internetRemindersToggle');
 
-        if (!timeInput || !emailToggle) return;
+        if (!dailyToggle || !timeInput) return;
 
+        const isDailyEnabled = dailyToggle.checked;
         const reminderTime = timeInput.value; // "HH:MM"
-        const isEmailEnabled = emailToggle.checked;
+        const isInternetEnabled = internetToggle ? internetToggle.checked : false;
+        
+        const emailToggle = document.getElementById('emailNotificationsToggle');
+        const isEmailEnabled = emailToggle ? emailToggle.checked : false;
 
         const now = new Date();
         const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-        // Ежедневное напоминание
-        if (currentTime === reminderTime) {
+        // 1. Ежедневное напоминание
+        if ((isDailyEnabled || isEmailEnabled || isInternetEnabled) && currentTime === reminderTime) {
             const lastSent = localStorage.getItem('lastDailyReminderSent');
             const today = formatDate(now);
             
@@ -605,11 +635,19 @@ class HabitTracker {
                 const uncompletedCount = todayHabits.filter(h => !this.isHabitCompletedToday(h.id)).length;
                 
                 if (uncompletedCount > 0) {
+                    // Отправка Push-уведомления в браузере (Интернет-напоминание)
+                    if (isInternetEnabled || isDailyEnabled) {
+                        this.sendBrowserNotification('Пора заняться привычками!', `У вас осталось ${uncompletedCount} невыполненных задач на сегодня.`);
+                    }
+                    
                     // Отправка EMAIL если включено
                     if (isEmailEnabled) {
                         this.API.sendReminderEmail(uncompletedCount).catch(err => console.error('Email error:', err));
                     }
 
+                    localStorage.setItem('lastDailyReminderSent', today);
+                } else {
+                    // Если все выполнено, просто помечаем как отправленное
                     localStorage.setItem('lastDailyReminderSent', today);
                 }
             }

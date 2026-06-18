@@ -384,6 +384,20 @@
                         <h3>Уведомления</h3>
 
                         <div class="settings-block">
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <span class="setting-title">Ежедневные уведомления</span>
+                                    <span class="setting-desc">Трекер может напоминать о твоих сегодняшних задачах в
+                                        определенное время каждый день. Выберите время для ежедневных
+                                        напоминаний.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="dailyRemindersToggle" {{ 'checked' if
+                                        current_user.daily_reminders }}
+                                        onchange="habitTracker.updateNotificationSetting('daily_reminders', this.checked)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                             <div class="settings-row">
                                 <div class="row-label">Время ежедневного напоминания</div>
                                 <div class="row-value">
@@ -391,6 +405,20 @@
                                         class="settings-time-input"
                                         onchange="habitTracker.updateNotificationSetting('reminder_time', this.value)">
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-block">
+                            <div class="settings-row-flex">
+                                <div class="setting-info">
+                                    <span class="setting-title">Интернет-уведомление</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="internetRemindersToggle" {{ 'checked' if
+                                        current_user.internet_reminders }}
+                                        onchange="habitTracker.updateNotificationSetting('internet_reminders', this.checked)">
+                                    <span class="slider round"></span>
+                                </label>
                             </div>
                         </div>
 
@@ -408,6 +436,7 @@
                                     <span class="slider round"></span>
                                 </label>
                             </div>
+
                         </div>
                     </div>
 
