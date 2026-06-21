@@ -1094,9 +1094,19 @@ def api_import_data():
             db.session.flush() # Получаем новый ID
             id_map[str(h.get('id'))] = new_habit.id
             
+        # Функция для проверки корректности даты
+        def is_valid_date(d):
+            if not isinstance(d, str):
+                return False
+            if len(d) > 10 or 'undefined' in d:
+                return False
+            return True
+
         # Импортируем выполнения (completions)
         completions = data.get('completions', {})
         for date, acts in completions.items():
+            if not is_valid_date(date):
+                continue
             for old_id, is_completed in acts.items():
                 if is_completed and str(old_id) in id_map:
                     log = HabitLog.query.filter_by(habit_id=id_map[str(old_id)], date=date).first()
@@ -1108,6 +1118,8 @@ def api_import_data():
         # Если есть progress, тоже импортируем
         progress_data = data.get('progress', {})
         for date, acts in progress_data.items():
+            if not is_valid_date(date):
+                continue
             for old_id, prog in acts.items():
                 if str(old_id) in id_map:
                     log = HabitLog.query.filter_by(habit_id=id_map[str(old_id)], date=date).first()
