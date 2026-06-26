@@ -471,21 +471,42 @@ def api_get_insights():
             elif n.mood in ('bad', 'terrible'):
                 mood_completions['bad'].append(rate)
 
-        if mood_completions['good'] and mood_completions['bad']:
-            avg_good = sum(mood_completions['good']) / len(mood_completions['good'])
-            avg_bad  = sum(mood_completions['bad'])  / len(mood_completions['bad'])
-            diff = avg_good - avg_bad
-            if diff > 0.1:
+        if mood_completions['good'] or mood_completions['bad']:
+            if mood_completions['good'] and mood_completions['bad']:
+                avg_good = sum(mood_completions['good']) / len(mood_completions['good'])
+                avg_bad  = sum(mood_completions['bad'])  / len(mood_completions['bad'])
+                diff = avg_good - avg_bad
+                if diff > 0.1:
+                    insights.append({
+                        "icon": "😊",
+                        "title": "Корреляция настроения",
+                        "text": f"В дни с хорошим настроением вы выполняете на {int(diff * 100)}% больше привычек. Позаботьтесь о своём состоянии!"
+                    })
+                elif diff < -0.1:
+                    insights.append({
+                        "icon": "💪",
+                        "title": "Корреляция настроения",
+                        "text": "Вы выполняете привычки даже в плохие дни. Это настоящая дисциплина!"
+                    })
+                else:
+                    insights.append({
+                        "icon": "⚖️",
+                        "title": "Корреляция настроения",
+                        "text": "Ваша продуктивность стабильна и не зависит от настроения. Отличный контроль!"
+                    })
+            elif mood_completions['good']:
+                avg_good = sum(mood_completions['good']) / len(mood_completions['good'])
                 insights.append({
-                    "icon": "😊",
-                    "title": "Настроение решает",
-                    "text": f"В дни с хорошим настроением вы выполняете на {int(diff * 100)}% больше привычек. Позаботьтесь о своём состоянии!"
+                    "icon": "🌟",
+                    "title": "Корреляция настроения",
+                    "text": f"В дни с хорошим настроением вы выполняете {int(avg_good * 100)}% привычек. Так держать!"
                 })
-            elif diff < -0.1:
+            elif mood_completions['bad']:
+                avg_bad = sum(mood_completions['bad']) / len(mood_completions['bad'])
                 insights.append({
-                    "icon": "💪",
-                    "title": "Сила воли впечатляет",
-                    "text": "Вы выполняете привычки даже в плохие дни. Это настоящая дисциплина!"
+                    "icon": "🛡️",
+                    "title": "Корреляция настроения",
+                    "text": f"Даже в плохие дни вы выполняете {int(avg_bad * 100)}% привычек. Не забывайте отдыхать!"
                 })
 
     # --- Инсайт 3: Сильнейшая привычка ---
